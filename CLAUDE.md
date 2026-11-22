@@ -1,0 +1,27 @@
+@AGENTS.md
+
+# Catálogo Streaming
+
+Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados do TMDB.
+É um **projeto de estudo**: o dono está aprendendo a usar o Claude Code e a construir sites completos.
+
+- Design: [docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md](docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md)
+- Plano: [docs/superpowers/plans/2026-11-22-catalogo-streaming.md](docs/superpowers/plans/2026-11-22-catalogo-streaming.md)
+
+## Como trabalhar com o dono
+
+- Ele é iniciante e fala português. Explique cada passo em português simples, sem jargão (ou explique o jargão).
+- Trabalhe em etapas pequenas, cada uma com algo para ele ver no navegador.
+- Ações em sites externos (TMDB, GitHub, Vercel) são feitas por ele, com instruções passo a passo.
+
+## Regras do projeto
+
+- O token do TMDB (`TMDB_READ_TOKEN`) fica só em `.env.local` e na Vercel. Nunca no Git, nunca em código de cliente.
+- Todo arquivo que chama o TMDB começa com `import "server-only";`.
+- Lógica pura em `src/lib/` com testes em `tests/`. Telas em `src/components/` e `src/app/`.
+
+## Comandos
+
+- `npm run dev`: liga o site em http://localhost:3000
+- `npm test`: roda os testes
+- `npm run lint`: procura problemas no código
