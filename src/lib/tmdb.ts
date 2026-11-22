@@ -1,5 +1,10 @@
 import "server-only"; // garante que este arquivo (e o token) nunca vá para o navegador
 
+import { cacheLife } from "next/cache";
+import { montarParametrosDiscover } from "./discover";
+import { extrairAno, urlImagem } from "./formatar";
+import type { PaginaFilmes } from "./tipos";
+
 const BASE = "https://api.themoviedb.org/3";
 
 /** Erro de conversa com o TMDB, com o código HTTP (ex.: 404 = não encontrado). */
@@ -28,4 +33,35 @@ export async function tmdbFetch<T>(caminho: string, params: Record<string, strin
   const resposta = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } });
   if (!resposta.ok) throw new TmdbErro(`TMDB respondeu ${resposta.status} em ${caminho}`, resposta.status);
   return (await resposta.json()) as T;
+}
+
+/** O TMDB nunca devolve mais que 500 páginas de uma busca. */
+export const LIMITE_PAGINAS = 500;
+
+type TmdbDiscover = {
+  page: number;
+  total_pages: number;
+  results: { id: number; title: string; release_date?: string; vote_average: number; poster_path: string | null }[];
+};
+
+/**
+ * Uma página do catálogo: filmes disponíveis no Brasil, do serviço escolhido (ou de todos).
+ * "use cache" guarda o resultado por algumas horas, para o site ficar rápido.
+ */
+export async function buscarFilmes(slug: string | null | undefined, pagina: number): Promise<PaginaFilmes> {
+  "use cache";
+  cacheLife("hours");
+
+  const dados = await tmdbFetch<TmdbDiscover>("/discover/movie", montarParametrosDiscover(slug, pagina));
+  return {
+    pagina: dados.page,
+    totalPaginas: Math.min(dados.total_pages, LIMITE_PAGINAS),
+    filmes: dados.results.map((f) => ({
+      id: f.id,
+      titulo: f.title,
+      ano: extrairAno(f.release_date),
+      nota: f.vote_average,
+      capa: urlImagem(f.poster_path, "w342"),
+    })),
+  };
 }

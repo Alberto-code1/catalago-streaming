@@ -1,0 +1,23 @@
+.topo {
+  border-bottom: 1px solid var(--borda);
+  background: var(--superficie);
+}
+
+.dentro {
+  max-width: var(--largura);
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.logo span {
+  color: var(--destaque);
+}
