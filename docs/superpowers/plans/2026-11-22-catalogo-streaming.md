@@ -94,7 +94,7 @@ export type TmdbProv = { provider_id: number; provider_name: string; logo_path: 
 
 ---
 
-### Tarefa 1: Criar o projeto, salvar no Git e enviar ao GitHub
+### Task 1: Criar o projeto, salvar no Git e enviar ao GitHub
 
 **Arquivos:**
 - Criar: tudo o que o `create-next-app` gera, `vitest.config.ts`, `tests/sanidade.test.ts` e `CLAUDE.md`
@@ -120,7 +120,7 @@ Esperado: termina com "Success!". Depois, devolva `.superpowers/` para a raiz.
 
 ---
 
-### Tarefa 2: Chave do TMDB, cliente seguro e lista de serviços
+### Task 2: Chave do TMDB, cliente seguro e lista de serviços
 
 **Arquivos:**
 - Criar: `.env.local`, `src/lib/tipos.ts`, `src/lib/tmdb.ts` (só `tmdbFetch` por enquanto), `src/lib/servicos.ts`, `scripts/listar-servicos.mjs`, `tests/servicos.test.ts`
@@ -149,7 +149,7 @@ expect(idsDeTodos()).toBe(SERVICOS.map(s => s.providerId).join("|"));
 
 ---
 
-### Tarefa 3: Grade de filmes populares na página inicial
+### Task 3: Grade de filmes populares na página inicial
 
 **Arquivos:**
 - Criar: `src/lib/formatar.ts`, `src/lib/discover.ts` (só `montarParametrosDiscover`), `src/components/CartaoFilme.tsx` e `.module.css`, `src/components/GradeFilmes.tsx` e `.module.css`, `src/components/Rodape.tsx`, `tests/formatar.test.ts`, `tests/discover.test.ts`
@@ -201,7 +201,7 @@ expect(montarParametrosDiscover("xpto", 1).with_watch_providers).toBe(idsDeTodos
 
 ---
 
-### Tarefa 4: Filtro por serviço
+### Task 4: Filtro por serviço
 
 **Arquivos:**
 - Criar: `src/components/FiltroServicos.tsx` e `.module.css`
@@ -220,7 +220,7 @@ expect(montarParametrosDiscover("xpto", 1).with_watch_providers).toBe(idsDeTodos
 
 ---
 
-### Tarefa 5: Carregar mais filmes
+### Task 5: Carregar mais filmes
 
 **Arquivos:**
 - Criar: `src/app/api/filmes/route.ts`, `src/components/CarregarMais.tsx` e `.module.css`
@@ -257,7 +257,7 @@ expect(juntarSemRepetir([], [b, b])).toEqual([b]);
 
 ---
 
-### Tarefa 6: Página do filme
+### Task 6: Página do filme
 
 **Arquivos:**
 - Criar: `src/lib/filme.ts`, `tests/filme.test.ts`, `src/app/filme/[id]/page.tsx` e `.module.css`, `src/app/filme/[id]/not-found.tsx`, `src/components/Trailer.tsx`, `src/components/Elenco.tsx` e `.module.css`
@@ -294,7 +294,7 @@ expect(extrairOndeAssistir({ flatrate: [p(8, "Netflix")] })[0].logo).toBe("https
 
 ---
 
-### Tarefa 7: Erros e casos vazios
+### Task 7: Erros e casos vazios
 
 **Arquivos:**
 - Criar: `src/app/error.tsx`
@@ -312,7 +312,7 @@ expect(extrairOndeAssistir({ flatrate: [p(8, "Netflix")] })[0].logo).toBe("https
 
 ---
 
-### Tarefa 8: Carregamento e acessibilidade
+### Task 8: Carregamento e acessibilidade
 
 **Arquivos:**
 - Criar: `src/components/Esqueleto.tsx` e `.module.css`, `src/app/loading.tsx`, `src/app/filme/[id]/loading.tsx`
@@ -331,7 +331,7 @@ expect(extrairOndeAssistir({ flatrate: [p(8, "Netflix")] })[0].logo).toBe("https
 
 ---
 
-### Tarefa 9: SEO, compartilhamento e identidade
+### Task 9: SEO, compartilhamento e identidade
 
 **Arquivos:**
 - Criar: `src/lib/site.ts`, `tests/site.test.ts`, `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/opengraph-image.tsx`, `src/app/icon.svg`, `src/app/sobre/page.tsx` e `.module.css`
@@ -364,7 +364,7 @@ expect(urls).toContain(`${urlDoSite()}/?servico=netflix`);
 
 ---
 
-### Tarefa 10: Testes de ponta a ponta
+### Task 10: Testes de ponta a ponta
 
 **Arquivos:**
 - Criar: `playwright.config.ts`, `e2e/catalogo.spec.ts`
@@ -390,7 +390,7 @@ expect(urls).toContain(`${urlDoSite()}/?servico=netflix`);
 
 ---
 
-### Tarefa 11: Publicar na Vercel e ativar estatísticas
+### Task 11: Publicar na Vercel e ativar estatísticas
 
 **Arquivos:**
 - Modificar: `src/app/layout.tsx` (`<Analytics />` e `<SpeedInsights />`), `CLAUDE.md` (link do site)
@@ -406,7 +406,7 @@ expect(urls).toContain(`${urlDoSite()}/?servico=netflix`);
 
 ---
 
-### Tarefa 12: Robô de qualidade (CI) e medição final
+### Task 12: Robô de qualidade (CI) e medição final
 
 **Arquivos:**
 - Criar: `.github/workflows/ci.yml`
