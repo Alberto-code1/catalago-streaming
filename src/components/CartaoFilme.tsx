@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { formatarNota } from "@/lib/formatar";
+import { hrefFilme } from "@/lib/links";
 import type { FilmeResumo, Servico } from "@/lib/tipos";
 import styles from "./CartaoFilme.module.css";
 
@@ -19,7 +20,7 @@ type Props = {
 /** O cartão de um filme na grade: capa, nota, título e ano. Clicar abre a página do filme. */
 export function CartaoFilme({ filme, servico, prioridade = "normal" }: Props) {
   return (
-    <Link href={`/filme/${filme.id}`} className={styles.cartao} data-testid="cartao-filme">
+    <Link href={hrefFilme(filme.id, servico?.slug)} className={styles.cartao} data-testid="cartao-filme">
       <div className={styles.capa}>
         {filme.capa ? (
           <Image

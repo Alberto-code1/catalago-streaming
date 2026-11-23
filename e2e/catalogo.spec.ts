@@ -53,3 +53,35 @@ test("sem problemas graves de acessibilidade", async ({ page }) => {
     expect(graves.map((v) => `${caminho}: ${v.id}`)).toEqual([]);
   }
 });
+
+test("voltar da página do filme mantém o filtro escolhido", async ({ page }) => {
+  await page.goto("/?servico=netflix");
+  await page.getByTestId("cartao-filme").first().click();
+  await expect(page).toHaveURL(/\/filme\/\d+/);
+  await page.getByRole("link", { name: "← Voltar ao catálogo" }).click();
+  await expect(page).toHaveURL(/\/\?servico=netflix$/);
+  await expect(page.getByRole("link", { name: "Netflix", exact: true })).toHaveAttribute("aria-current", "page");
+});
+
+test("se a rede falhar no 'Carregar mais', a mensagem é em português", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByTestId("cartao-filme").nth(19)).toBeVisible();
+  // Simula a internet caindo bem na hora do clique
+  await page.route("**/api/filmes**", (rota) => rota.abort("internetdisconnected"));
+  await page.getByRole("button", { name: "Carregar mais filmes" }).click();
+  // (o Next.js tem outro "alert" invisível na página, por isso filtramos pelo nosso texto)
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Não foi possível carregar os filmes agora. Tente de novo em instantes." }),
+  ).toBeVisible();
+});
+
+test("se o servidor responder sem JSON, a mensagem é em português", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByTestId("cartao-filme").nth(19)).toBeVisible();
+  await page.route("**/api/filmes**", (rota) => rota.fulfill({ status: 500, body: "" }));
+  await page.getByRole("button", { name: "Carregar mais filmes" }).click();
+  // (o Next.js tem outro "alert" invisível na página, por isso filtramos pelo nosso texto)
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Não foi possível carregar os filmes agora. Tente de novo em instantes." }),
+  ).toBeVisible();
+});

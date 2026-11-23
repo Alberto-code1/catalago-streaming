@@ -8,6 +8,8 @@ import { EsqueletoGrade } from "./Esqueleto";
 import { GradeFilmes } from "./GradeFilmes";
 import styles from "./CarregarMais.module.css";
 
+const MENSAGEM_DE_ERRO = "Não foi possível carregar os filmes agora. Tente de novo em instantes.";
+
 type Props = {
   /** Apelido do serviço filtrado (ou nada, para "Todos"). */
   servico?: string;
@@ -33,16 +35,16 @@ export function CarregarMais({ servico, paginaInicial, totalPaginas, idsIniciais
       const params = new URLSearchParams({ pagina: String(pagina + 1) });
       if (servico) params.set("servico", servico);
       const resposta = await fetch(`/api/filmes?${params}`);
-      const dados = await resposta.json();
-      if (!resposta.ok) throw new Error(dados.erro);
-
-      const { filmes, pagina: nova, totalPaginas: novoTotal } = dados as PaginaFilmes;
+      if (!resposta.ok) throw new Error("resposta com erro");
+      const { filmes, pagina: nova, totalPaginas: novoTotal } = (await resposta.json()) as PaginaFilmes;
       const naTela = new Set(idsIniciais);
       setExtras((atuais) => juntarSemRepetir(atuais, filmes.filter((f) => !naTela.has(f.id))));
       setPagina(nova);
       setTotal(novoTotal);
-    } catch (e) {
-      setErro(e instanceof Error && e.message ? e.message : "Não foi possível carregar os filmes agora. Tente de novo em instantes.");
+    } catch {
+      // Qualquer falha (internet caiu, servidor fora do ar, resposta estranha):
+      // o visitante vê sempre a mesma mensagem clara, nunca um erro técnico
+      setErro(MENSAGEM_DE_ERRO);
     } finally {
       setCarregando(false);
     }

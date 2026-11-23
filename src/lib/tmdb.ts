@@ -21,7 +21,13 @@ export async function tmdbFetch<T>(caminho: string, params: Record<string, strin
   const url = new URL(BASE + caminho);
   for (const [chave, valor] of Object.entries(params)) url.searchParams.set(chave, String(valor));
 
-  const resposta = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } });
+  let resposta: Response;
+  try {
+    resposta = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } });
+  } catch {
+    // Internet caiu, DNS falhou, conexão recusada: também é "o TMDB não respondeu"
+    throw new TmdbErro(`Sem conexão com o TMDB em ${caminho}`, 503);
+  }
   if (!resposta.ok) throw new TmdbErro(`TMDB respondeu ${resposta.status} em ${caminho}`, resposta.status);
   return (await resposta.json()) as T;
 }

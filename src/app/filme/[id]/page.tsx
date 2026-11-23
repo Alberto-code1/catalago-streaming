@@ -7,6 +7,7 @@ import { Elenco } from "@/components/Elenco";
 import { EsqueletoFilme } from "@/components/Esqueleto";
 import { Trailer } from "@/components/Trailer";
 import { formatarDuracao, formatarNota, resumir } from "@/lib/formatar";
+import { hrefCatalogo } from "@/lib/links";
 import { buscarDetalhes, buscarFilmes } from "@/lib/tmdb";
 import styles from "./page.module.css";
 
@@ -41,6 +42,8 @@ export async function generateMetadata({ params }: PageProps<"/filme/[id]">): Pr
     return {
       title: filme.ano ? `${filme.titulo} (${filme.ano})` : filme.titulo,
       description: descricao,
+      // O mesmo filme pode ser aberto com ?servico=...; para o Google, o endereço "oficial" é sem ele
+      alternates: { canonical: `/filme/${filme.id}` },
       openGraph: {
         type: "video.movie",
         title: filme.titulo,
@@ -54,7 +57,7 @@ export async function generateMetadata({ params }: PageProps<"/filme/[id]">): Pr
   }
 }
 
-export default function PaginaFilme({ params }: PageProps<"/filme/[id]">) {
+export default function PaginaFilme({ params, searchParams }: PageProps<"/filme/[id]">) {
   return (
     <Suspense
       fallback={
@@ -64,12 +67,12 @@ export default function PaginaFilme({ params }: PageProps<"/filme/[id]">) {
         </div>
       }
     >
-      <DetalhesFilme params={params} />
+      <DetalhesFilme params={params} searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params">) {
+async function DetalhesFilme({ params, searchParams }: Pick<PageProps<"/filme/[id]">, "params" | "searchParams">) {
   const id = lerId((await params).id);
   if (!id) notFound(); // ex.: /filme/abc
   const filme = await buscarDetalhes(id);
@@ -84,9 +87,10 @@ async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params"
         <div className={styles.degrade} />
 
         <div className={styles.conteudo}>
-          <Link href="/" className={styles.voltar}>
-            ← Voltar ao catálogo
-          </Link>
+          {/* O filtro vem do endereço (?servico=...): carrega à parte, para o resto da página continuar pré-montado */}
+          <Suspense fallback={<LinkVoltar href="/" />}>
+            <VoltarComFiltro searchParams={searchParams} />
+          </Suspense>
 
           <div className={styles.linha}>
             <div className={styles.capa}>
@@ -147,5 +151,19 @@ async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params"
         </section>
       )}
     </article>
+  );
+}
+
+/** "← Voltar ao catálogo" levando de volta ao filtro que a pessoa tinha escolhido. */
+async function VoltarComFiltro({ searchParams }: Pick<PageProps<"/filme/[id]">, "searchParams">) {
+  const { servico } = await searchParams;
+  return <LinkVoltar href={hrefCatalogo(typeof servico === "string" ? servico : undefined)} />;
+}
+
+function LinkVoltar({ href }: { href: string }) {
+  return (
+    <Link href={href} className={styles.voltar}>
+      ← Voltar ao catálogo
+    </Link>
   );
 }
