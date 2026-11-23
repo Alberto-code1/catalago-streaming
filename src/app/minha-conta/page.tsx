@@ -5,6 +5,7 @@ import { EsqueletoGrade } from "@/components/Esqueleto";
 import { type FilmeDaLista, ItemLista, resumoDaLista } from "@/components/ItemLista";
 import { Paginacao } from "@/components/Paginacao";
 import grade from "@/components/GradeFilmes.module.css";
+import { listarVistos } from "@/lib/dados/historico";
 import { listarAssistidos, listarQuero } from "@/lib/dados/listas";
 import { lerPagina } from "@/lib/discover";
 import { type Aba, LIMITES, lerAba } from "@/lib/listas";
@@ -121,6 +122,7 @@ async function carregar(usuario: Usuario, aba: Aba, pagina: number) {
     const { itens, total } = await listarAssistidos(usuario.id, pagina);
     return { itens: itens.map((i) => ({ id: i.filmeId, nota: i.nota })), total };
   }
-  // A aba "Vistos recentemente" chega na próxima etapa
-  return { itens: [], total: 0 };
+  // Vistos recentemente: só os 20 últimos, sem paginação
+  const ids = await listarVistos(usuario.id);
+  return { itens: ids.map((id) => ({ id })), total: ids.length };
 }

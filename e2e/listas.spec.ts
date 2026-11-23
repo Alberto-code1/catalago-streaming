@@ -107,3 +107,22 @@ test("nota gostei aparece na Minha conta", async ({ page }) => {
   await page.goto("/minha-conta?aba=assistidos");
   await expect(page.getByText("👍 Gostei")).toBeVisible();
 });
+
+test("abrir um filme aparece em vistos recentemente", async ({ page }) => {
+  await entrarComoTeste(page);
+  const registrou = (id: number) =>
+    page.waitForResponse((r) => r.request().method() === "POST" && r.url().startsWith(`http://localhost:3000/filme/${id}`));
+
+  let espera = registrou(FILME);
+  await page.goto(`/filme/${FILME}`);
+  await espera;
+  espera = registrou(1726);
+  await page.goto("/filme/1726");
+  await espera;
+
+  await page.goto("/minha-conta?aba=recentes");
+  const itens = page.getByTestId("item-lista");
+  await expect(itens).toHaveCount(2);
+  // O último aberto aparece primeiro
+  await expect(itens.first().locator("a")).toHaveAttribute("href", "/filme/1726");
+});

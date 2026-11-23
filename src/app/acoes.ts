@@ -4,6 +4,7 @@
 // o login: quem é a pessoa vem da sessão, nunca de um valor enviado pelo navegador.
 
 import { refresh } from "next/cache";
+import { registrarVisita } from "@/lib/dados/historico";
 import { darNota, marcarAssistido, marcarQuero, removerDe } from "@/lib/dados/listas";
 import { lerAba, lerIdFilme, lerNota, type Nota } from "@/lib/listas";
 import { obterUsuario } from "@/lib/sessao";
@@ -51,4 +52,16 @@ export async function removerDaLista(lista: string, filmeId: number): Promise<Re
   const r = await comPessoaEFilme(filmeId, (u, id) => removerDe(u, lerAba(lista), id));
   if (r.ok) refresh();
   return r;
+}
+
+/** Guarda que a pessoa abriu o filme. Não faz nada sem login ou com o histórico desligado. */
+export async function registrarVisitaAcao(filmeId: number): Promise<void> {
+  const id = lerIdFilme(filmeId);
+  const usuario = await obterUsuario();
+  if (!id || !usuario?.historico) return;
+  try {
+    await registrarVisita(usuario.id, id);
+  } catch (erro) {
+    console.error("Falha ao registrar visita:", erro);
+  }
 }

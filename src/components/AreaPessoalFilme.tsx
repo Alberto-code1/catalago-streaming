@@ -3,6 +3,7 @@ import { comPadraoSeFalhar } from "@/lib/conta";
 import { estadoDoFilme } from "@/lib/dados/listas";
 import { obterUsuario } from "@/lib/sessao";
 import { BotoesLista } from "./BotoesLista";
+import { RegistrarVisita } from "./RegistrarVisita";
 import styles from "./BotoesLista.module.css";
 
 /**
@@ -30,8 +31,20 @@ export async function AreaPessoalFilme({ filmeId }: { filmeId: number }) {
   }
 
   const estado = await comPadraoSeFalhar(() => estadoDoFilme(usuario.id, filmeId), null);
+  // Entra em "Vistos recentemente" só se a pessoa deixou o histórico ligado
+  const visita = usuario.historico && <RegistrarVisita filmeId={filmeId} />;
   if (!estado) {
-    return <p className={styles.aviso}>Não foi possível carregar sua lista agora.</p>;
+    return (
+      <>
+        <p className={styles.aviso}>Não foi possível carregar sua lista agora.</p>
+        {visita}
+      </>
+    );
   }
-  return <BotoesLista filmeId={filmeId} inicial={estado} />;
+  return (
+    <>
+      <BotoesLista filmeId={filmeId} inicial={estado} />
+      {visita}
+    </>
+  );
 }
