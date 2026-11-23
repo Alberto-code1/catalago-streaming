@@ -1,5 +1,8 @@
 // Formatos de dados usados no site inteiro.
 
+/** Um gênero de filme (lista do TMDB, em português). */
+export type Genero = { id: number; nome: string };
+
 /** Um serviço de streaming que aparece nos botões de filtro. */
 export type Servico = { slug: string; nome: string; providerId: number; cor: string };
 

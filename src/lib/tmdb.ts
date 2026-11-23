@@ -5,7 +5,7 @@ import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
-import type { DetalheFilme, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
+import type { DetalheFilme, Genero, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
 
@@ -42,11 +42,15 @@ type TmdbDiscover = {
  * Uma página do catálogo: filmes disponíveis no Brasil, do serviço escolhido (ou de todos).
  * "use cache" guarda o resultado por algumas horas, para o site ficar rápido.
  */
-export async function buscarFilmes(slug: string | null | undefined, pagina: number): Promise<PaginaFilmes> {
+export async function buscarFilmes(
+  slug: string | null | undefined,
+  pagina: number,
+  genero?: number,
+): Promise<PaginaFilmes> {
   "use cache";
   cacheLife("hours");
 
-  const dados = await tmdbFetch<TmdbDiscover>("/discover/movie", montarParametrosDiscover(slug, pagina));
+  const dados = await tmdbFetch<TmdbDiscover>("/discover/movie", montarParametrosDiscover(slug, pagina, genero));
   return {
     pagina: dados.page,
     totalPaginas: Math.min(dados.total_pages, LIMITE_PAGINAS),
@@ -58,6 +62,17 @@ export async function buscarFilmes(slug: string | null | undefined, pagina: numb
       capa: urlImagem(f.poster_path, "w342"),
     })),
   };
+}
+
+/** A lista de gêneros de filmes do TMDB, em português e em ordem alfabética. Muda raramente: cache de dias. */
+export async function buscarGeneros(): Promise<Genero[]> {
+  "use cache";
+  cacheLife("days");
+
+  const { genres } = await tmdbFetch<{ genres: { id: number; name: string }[] }>("/genre/movie/list", {
+    language: "pt-BR",
+  });
+  return genres.map((g) => ({ id: g.id, nome: g.name })).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 
 type TmdbDetalhe = {

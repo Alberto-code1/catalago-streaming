@@ -53,3 +53,18 @@ describe("juntarSemRepetir", () => {
     expect(juntarSemRepetir([], [b, b])).toEqual([b]);
   });
 });
+
+describe("montarParametrosDiscover com gênero", () => {
+  test("acrescenta o gênero quando ele é escolhido", () => {
+    expect(montarParametrosDiscover("netflix", 1, 35)).toEqual({
+      ...base,
+      page: "1",
+      with_watch_providers: "8",
+      with_genres: "35",
+    });
+  });
+
+  test("sem gênero, não manda o parâmetro", () => {
+    expect(montarParametrosDiscover(undefined, 1)).not.toHaveProperty("with_genres");
+  });
+});
