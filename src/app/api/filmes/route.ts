@@ -1,7 +1,8 @@
 import type { NextRequest } from "next/server";
 import { lerPagina } from "@/lib/discover";
 import { servicoPorSlug } from "@/lib/servicos";
-import { TmdbErro, buscarFilmes } from "@/lib/tmdb";
+import { ehErroTmdb } from "@/lib/erros";
+import { buscarFilmes } from "@/lib/tmdb";
 
 /**
  * GET /api/filmes?servico=netflix&pagina=2
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
     return Response.json(resultado);
   } catch (erro) {
-    if (erro instanceof TmdbErro) {
+    if (ehErroTmdb(erro)) {
       return Response.json(
         { erro: "Não foi possível carregar os filmes agora. Tente de novo em instantes." },
         { status: 502 },

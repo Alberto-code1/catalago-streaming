@@ -15,3 +15,9 @@
   padding: 24px 0;
   color: var(--texto-3);
 }
+
+.vazio {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--texto-3);
+}

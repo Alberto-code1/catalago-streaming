@@ -2,22 +2,12 @@ import "server-only"; // garante que este arquivo (e o token) nunca vá para o n
 
 import { cacheLife } from "next/cache";
 import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
+import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
 import type { DetalheFilme, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
-
-/** Erro de conversa com o TMDB, com o código HTTP (ex.: 404 = não encontrado). */
-export class TmdbErro extends Error {
-  constructor(
-    message: string,
-    public status: number,
-  ) {
-    super(message);
-    this.name = "TmdbErro";
-  }
-}
 
 /**
  * Faz um pedido ao TMDB usando o token secreto e devolve a resposta já convertida.

@@ -27,6 +27,15 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
   const servico = servicoPorSlug(typeof valor === "string" ? valor : undefined);
   const { filmes, pagina, totalPaginas } = await buscarFilmes(servico?.slug, 1);
 
+  if (filmes.length === 0) {
+    return (
+      <>
+        <FiltroServicos ativo={servico?.slug} />
+        <p className={styles.vazio}>Nenhum filme encontrado para este serviço.</p>
+      </>
+    );
+  }
+
   return (
     <>
       <FiltroServicos ativo={servico?.slug} />

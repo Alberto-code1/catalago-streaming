@@ -9,10 +9,18 @@ import { formatarDuracao, formatarNota } from "@/lib/formatar";
 import { buscarDetalhes, buscarFilmes } from "@/lib/tmdb";
 import styles from "./page.module.css";
 
-/** Na publicação, já deixa prontas as páginas dos 20 filmes mais populares. */
+/**
+ * Na publicação, já deixa prontas as páginas dos 20 filmes mais populares.
+ * Se o TMDB falhar nessa hora, não derruba nada: usa só um filme conhecido
+ * ("A Origem") e os outros são montados na primeira visita.
+ */
 export async function generateStaticParams() {
-  const { filmes } = await buscarFilmes(undefined, 1);
-  return filmes.map((f) => ({ id: String(f.id) }));
+  try {
+    const { filmes } = await buscarFilmes(undefined, 1);
+    return filmes.map((f) => ({ id: String(f.id) }));
+  } catch {
+    return [{ id: "27205" }];
+  }
 }
 
 /** Transforma o texto do endereço num id válido (número inteiro positivo), ou null. */
@@ -22,8 +30,13 @@ function lerId(texto: string): number | null {
 
 export async function generateMetadata({ params }: PageProps<"/filme/[id]">): Promise<Metadata> {
   const id = lerId((await params).id);
-  const filme = id ? await buscarDetalhes(id) : null;
-  return { title: filme ? `${filme.titulo} · Catálogo Streaming` : "Filme não encontrado · Catálogo Streaming" };
+  try {
+    const filme = id ? await buscarDetalhes(id) : null;
+    return { title: filme ? `${filme.titulo} · Catálogo Streaming` : "Filme não encontrado · Catálogo Streaming" };
+  } catch {
+    // Se o TMDB falhar, a página mostra a mensagem de erro; aqui só damos um título genérico
+    return { title: "Catálogo Streaming" };
+  }
 }
 
 export default function PaginaFilme({ params }: PageProps<"/filme/[id]">) {
