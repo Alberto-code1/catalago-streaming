@@ -1,0 +1,171 @@
+.carregando {
+  padding: 24px 0;
+  color: var(--texto-3);
+}
+
+/* Topo com a imagem de fundo do filme */
+.topo {
+  position: relative;
+  margin: 0 -16px;
+  padding: 24px 16px 28px;
+  overflow: hidden;
+  background: linear-gradient(120deg, #3a2a1c 0%, #1f1410 60%, var(--fundo) 100%);
+}
+
+.fundo {
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.degrade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 13, 18, 0.2) 0%, var(--fundo) 95%);
+}
+
+.conteudo {
+  position: relative;
+}
+
+.voltar {
+  display: inline-block;
+  font-size: 14px;
+  color: #d9dce6;
+  margin-bottom: 22px;
+}
+
+.voltar:hover {
+  color: var(--destaque);
+}
+
+.linha {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.capa {
+  position: relative;
+  width: 210px;
+  aspect-ratio: 2 / 3;
+  flex-shrink: 0;
+  border-radius: var(--raio);
+  overflow: hidden;
+  background: linear-gradient(160deg, #2a3042, #12151d);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.capa img {
+  object-fit: cover;
+}
+
+.semCapa {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.info {
+  flex: 1;
+  min-width: 260px;
+}
+
+.info h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.info h1 span {
+  font-weight: 400;
+  color: #c9ccd6;
+  font-size: 24px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 12px 0 16px;
+  font-size: 14px;
+  color: #c9ccd6;
+}
+
+.nota {
+  background: var(--destaque);
+  color: #111;
+  font-weight: 800;
+  border-radius: 6px;
+  padding: 2px 9px;
+}
+
+.genero {
+  border: 1px solid #4a4f63;
+  border-radius: 999px;
+  padding: 2px 11px;
+  font-size: 12px;
+}
+
+.sinopse {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #dde0e8;
+  max-width: 640px;
+}
+
+.rotulo {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+  margin: 22px 0 10px;
+  font-weight: 600;
+}
+
+.servicos {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.servico {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 6px 12px 6px 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.servico img {
+  border-radius: 6px;
+}
+
+.vazio {
+  color: var(--texto-3);
+  font-size: 14px;
+}
+
+.bloco {
+  padding-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .capa {
+    width: 140px;
+  }
+
+  .info h1 {
+    font-size: 26px;
+  }
+}

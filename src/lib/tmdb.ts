@@ -2,8 +2,9 @@ import "server-only"; // garante que este arquivo (e o token) nunca vá para o n
 
 import { cacheLife } from "next/cache";
 import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
+import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
-import type { PaginaFilmes } from "./tipos";
+import type { DetalheFilme, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
 
@@ -59,6 +60,69 @@ export async function buscarFilmes(slug: string | null | undefined, pagina: numb
       ano: extrairAno(f.release_date),
       nota: f.vote_average,
       capa: urlImagem(f.poster_path, "w342"),
+    })),
+  };
+}
+
+type TmdbDetalhe = {
+  id: number;
+  title: string;
+  release_date?: string;
+  vote_average: number;
+  runtime: number | null;
+  genres: { name: string }[];
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  videos: { results: TmdbVideo[] };
+  credits: { cast: { id: number; name: string; character: string; profile_path: string | null }[] };
+  "watch/providers": { results: { BR?: TmdbProvedoresBR } };
+};
+
+/**
+ * Tudo sobre um filme, numa chamada só ("append_to_response" traz vídeos,
+ * elenco e onde assistir junto). Devolve null se o filme não existe.
+ */
+export async function buscarDetalhes(id: number): Promise<DetalheFilme | null> {
+  "use cache";
+  cacheLife("hours");
+
+  let f: TmdbDetalhe;
+  try {
+    f = await tmdbFetch<TmdbDetalhe>(`/movie/${id}`, {
+      language: "pt-BR",
+      append_to_response: "videos,credits,watch/providers",
+      include_video_language: "pt,en",
+    });
+  } catch (erro) {
+    if (erro instanceof TmdbErro && erro.status === 404) return null;
+    throw erro;
+  }
+
+  // Sem sinopse em português? Usa a em inglês.
+  let sinopse = f.overview;
+  if (!sinopse) {
+    const emIngles = await tmdbFetch<{ overview: string }>(`/movie/${id}`, { language: "en-US" });
+    sinopse = emIngles.overview;
+  }
+
+  return {
+    id: f.id,
+    titulo: f.title,
+    ano: extrairAno(f.release_date),
+    nota: f.vote_average,
+    duracaoMin: f.runtime,
+    generos: f.genres.map((g) => g.name),
+    sinopse,
+    capa: urlImagem(f.poster_path, "w780"),
+    fundo: urlImagem(f.backdrop_path, "w1280"),
+    ondeAssistir: extrairOndeAssistir(f["watch/providers"].results.BR),
+    trailerKey: escolherTrailer(f.videos.results),
+    elenco: f.credits.cast.slice(0, 10).map((a) => ({
+      id: a.id,
+      nome: a.name,
+      personagem: a.character,
+      foto: urlImagem(a.profile_path, "w185"),
     })),
   };
 }
