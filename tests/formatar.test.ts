@@ -3,7 +3,7 @@ import { extrairAno, formatarDuracao, formatarNota, iniciais, resumir, urlImagem
 
 describe("formatarNota", () => {
   test("mostra uma casa decimal com ponto", () => {
-    expect(formatarNota(8.234)).toBe("8.2");
+    expect(formatarNota(8.234)).toBe("9.9"); // ERRO DE PROPÓSITO: aula do robô
     expect(formatarNota(0)).toBe("0.0");
   });
 });
