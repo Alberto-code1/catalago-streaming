@@ -1,7 +1,7 @@
 import "server-only"; // garante que este arquivo (e o token) nunca vá para o navegador
 
 import { cacheLife } from "next/cache";
-import { montarParametrosDiscover } from "./discover";
+import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { extrairAno, urlImagem } from "./formatar";
 import type { PaginaFilmes } from "./tipos";
 
@@ -34,9 +34,6 @@ export async function tmdbFetch<T>(caminho: string, params: Record<string, strin
   if (!resposta.ok) throw new TmdbErro(`TMDB respondeu ${resposta.status} em ${caminho}`, resposta.status);
   return (await resposta.json()) as T;
 }
-
-/** O TMDB nunca devolve mais que 500 páginas de uma busca. */
-export const LIMITE_PAGINAS = 500;
 
 type TmdbDiscover = {
   page: number;

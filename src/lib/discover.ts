@@ -1,4 +1,35 @@
 import { idsDeTodos, servicoPorSlug } from "./servicos";
+import type { FilmeResumo } from "./tipos";
+
+/** O TMDB nunca devolve mais que 500 páginas de uma busca. */
+export const LIMITE_PAGINAS = 500;
+
+/**
+ * Lê o número da página vindo do endereço, com segurança:
+ * texto inválido, zero ou negativo vira 1; acima de 500 vira 500.
+ */
+export function lerPagina(valor: string | null): number {
+  const numero = Math.floor(Number(valor));
+  if (!Number.isFinite(numero) || numero < 1) return 1;
+  return Math.min(numero, LIMITE_PAGINAS);
+}
+
+/**
+ * Junta os filmes novos aos que já estão na tela, sem repetir nenhum.
+ * (A popularidade muda entre um pedido e outro, então o mesmo filme
+ * pode aparecer em duas páginas.)
+ */
+export function juntarSemRepetir(atuais: FilmeResumo[], novos: FilmeResumo[]): FilmeResumo[] {
+  const vistos = new Set(atuais.map((f) => f.id));
+  const resultado = [...atuais];
+  for (const filme of novos) {
+    if (!vistos.has(filme.id)) {
+      vistos.add(filme.id);
+      resultado.push(filme);
+    }
+  }
+  return resultado;
+}
 
 /**
  * Monta os parâmetros do pedido "/discover/movie" ao TMDB:

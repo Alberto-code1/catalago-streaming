@@ -1,0 +1,29 @@
+.botao {
+  display: block;
+  margin: 18px auto 8px;
+  background: transparent;
+  color: var(--texto);
+  border: 1px solid #39405a;
+  padding: 11px 26px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.botao:hover:not(:disabled) {
+  border-color: var(--destaque);
+}
+
+.botao:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.erro {
+  text-align: center;
+  color: #ff8a80;
+  margin-top: 16px;
+}

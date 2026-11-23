@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { CarregarMais } from "@/components/CarregarMais";
 import { FiltroServicos } from "@/components/FiltroServicos";
 import { GradeFilmes } from "@/components/GradeFilmes";
 import { servicoPorSlug } from "@/lib/servicos";
@@ -24,12 +25,20 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
   const { servico: valor } = await searchParams;
   // Um apelido desconhecido (ex.: ?servico=xpto) vira "Todos"
   const servico = servicoPorSlug(typeof valor === "string" ? valor : undefined);
-  const { filmes } = await buscarFilmes(servico?.slug, 1);
+  const { filmes, pagina, totalPaginas } = await buscarFilmes(servico?.slug, 1);
 
   return (
     <>
       <FiltroServicos ativo={servico?.slug} />
       <GradeFilmes filmes={filmes} servico={servico} />
+      {/* key: ao trocar de filtro, o botão recomeça do zero */}
+      <CarregarMais
+        key={servico?.slug ?? "todos"}
+        servico={servico?.slug}
+        paginaInicial={pagina}
+        totalPaginas={totalPaginas}
+        idsIniciais={filmes.map((f) => f.id)}
+      />
     </>
   );
 }
