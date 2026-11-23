@@ -7,6 +7,9 @@
  */
 export function lerVolta(valor: unknown): string {
   if (typeof valor !== "string") return "/";
+  // Caracteres invisíveis (tab, quebra de linha...) são apagados pelo navegador e podem
+  // transformar "/\t/site.com" em "//site.com": qualquer um deles já recusa o endereço
+  if (/[\u0000-\u001f\u007f]/.test(valor)) return "/";
   if (!valor.startsWith("/") || valor.startsWith("//") || valor.startsWith("/\\")) return "/";
   return valor;
 }

@@ -8,7 +8,19 @@ describe("lerVolta", () => {
   });
 
   it("recusa endereços de outros sites e valores estranhos", () => {
-    for (const valor of ["//mal.com", "https://mal.com", "/\\mal.com", "", undefined, ["/a", "/b"], "filme/1"]) {
+    for (const valor of [
+      "//mal.com",
+      "https://mal.com",
+      "/\\mal.com",
+      // O navegador apaga tab e quebra de linha: "/\t/mal.com" vira "//mal.com"
+      "/\t/mal.com",
+      "/\n/mal.com",
+      "/\r//mal.com",
+      "",
+      undefined,
+      ["/a", "/b"],
+      "filme/1",
+    ]) {
       expect(lerVolta(valor)).toBe("/");
     }
   });

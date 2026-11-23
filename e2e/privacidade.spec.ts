@@ -90,3 +90,34 @@ test("privacidade e minha conta sem violações sérias de acessibilidade", asyn
   r = await new AxeBuilder({ page }).analyze();
   expect(r.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([]);
 });
+
+test("depois de excluir a conta, uma cópia antiga do cookie não vale mais", async ({ page, context }) => {
+  await entrarComoTeste(page);
+  await page.goto("/minha-conta");
+  await expect(page.getByRole("heading", { name: "Minha conta" })).toBeVisible();
+  // Guarda os cookies, como se a pessoa estivesse logada também em outro aparelho
+  const copia = await context.cookies();
+
+  await page.getByRole("button", { name: "Excluir minha conta" }).click();
+  await page.getByRole("button", { name: "Excluir para sempre" }).click();
+  await expect(page.getByRole("link", { name: "Entrar" })).toBeVisible();
+
+  // O "outro aparelho" volta a usar os cookies antigos
+  await context.addCookies(copia);
+  await page.goto("/minha-conta");
+  await expect(page).toHaveURL(/\/entrar/);
+});
+
+test("sair num aparelho não deixa uma cópia antiga do cookie logada", async ({ page, context }) => {
+  await entrarComoTeste(page);
+  await page.goto("/");
+  const copia = await context.cookies();
+
+  await page.getByTestId("menu-conta").click();
+  await page.getByRole("button", { name: "Sair" }).click();
+  await expect(page.getByRole("link", { name: "Entrar" })).toBeVisible();
+
+  await context.addCookies(copia);
+  await page.goto("/minha-conta");
+  await expect(page).toHaveURL(/\/entrar/);
+});

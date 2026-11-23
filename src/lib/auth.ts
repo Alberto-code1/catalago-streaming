@@ -36,8 +36,10 @@ export const auth = betterAuth({
   // Login com e-mail e senha: só para o robô de testes, nunca ligado na Vercel
   emailAndPassword: { enabled: loginDeTesteLigado(process.env) },
   session: {
-    // Guarda um resumo da sessão no próprio cookie por 5 minutos: menos consultas ao banco
-    cookieCache: { enabled: true, maxAge: 5 * 60 },
+    // Sem "resumo da sessão no cookie": toda visita logada confere o login no banco.
+    // Assim "Sair" e "Excluir minha conta" valem na hora em todos os aparelhos.
+    // (Visitantes sem login continuam sem consultar o banco.)
+    cookieCache: { enabled: false },
   },
   // Só aceita pedidos de login vindos do próprio site (oficial, prévia atual ou computador)
   trustedOrigins: [PRODUCAO, previa, process.env.BETTER_AUTH_URL].filter((o): o is string => !!o),
