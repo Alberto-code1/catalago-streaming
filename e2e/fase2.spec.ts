@@ -76,3 +76,43 @@ test("busca sem problemas graves de acessibilidade", async ({ page }) => {
   const graves = violations.filter((v) => v.impact === "critical" || v.impact === "serious");
   expect(graves.map((v) => v.id)).toEqual([]);
 });
+
+test("lista de gêneros fecha com Esc e devolve o foco ao botão", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Gênero ▾").click();
+  const comedia = page.getByRole("link", { name: "Comédia", exact: true });
+  await expect(comedia).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(comedia).toBeHidden();
+  await expect(page.locator("summary")).toBeFocused();
+});
+
+test("lista de gêneros fecha ao clicar fora", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Gênero ▾").click();
+  const comedia = page.getByRole("link", { name: "Comédia", exact: true });
+  await expect(comedia).toBeVisible();
+  await page.getByRole("heading", { level: 1 }).click();
+  await expect(comedia).toBeHidden();
+});
+
+test("só um link marcado como página atual nos filtros", async ({ page }) => {
+  await page.goto("/");
+  await page.getByText("Gênero ▾").click();
+  const filtros = page.getByRole("navigation", { name: "Filtros do catálogo" });
+  await expect(filtros.locator('[aria-current="page"]')).toHaveCount(1);
+  await expect(filtros.getByRole("link", { name: "Todos os gêneros" })).toHaveAttribute("aria-current", "true");
+});
+
+test("lista de gêneros cabe na tela de um celular estreito", async ({ page }) => {
+  // 360px: o botão "Gênero" começa uma linha nova, e a lista saía 100px pela esquerda
+  for (const endereco of ["/?servico=globoplay", "/?servico=globoplay&genero=10770"]) {
+    await page.setViewportSize({ width: 360, height: 740 });
+    await page.goto(endereco);
+    await page.locator("summary").click();
+    const caixa = await page.locator("details ul").boundingBox();
+    expect(caixa).not.toBeNull();
+    expect(caixa!.x).toBeGreaterThanOrEqual(0);
+    expect(caixa!.x + caixa!.width).toBeLessThanOrEqual(360);
+  }
+});

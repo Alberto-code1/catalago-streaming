@@ -1,4 +1,5 @@
 .filtro {
+  position: relative; /* referência para a lista de gêneros no celular */
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
