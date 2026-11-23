@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Elenco } from "@/components/Elenco";
+import { EsqueletoFilme } from "@/components/Esqueleto";
 import { Trailer } from "@/components/Trailer";
 import { formatarDuracao, formatarNota } from "@/lib/formatar";
 import { buscarDetalhes, buscarFilmes } from "@/lib/tmdb";
@@ -41,7 +42,14 @@ export async function generateMetadata({ params }: PageProps<"/filme/[id]">): Pr
 
 export default function PaginaFilme({ params }: PageProps<"/filme/[id]">) {
   return (
-    <Suspense fallback={<p className={styles.carregando}>Carregando filme…</p>}>
+    <Suspense
+      fallback={
+        <div role="status">
+          <span className="sr-only">Carregando filme…</span>
+          <EsqueletoFilme />
+        </div>
+      }
+    >
       <DetalhesFilme params={params} />
     </Suspense>
   );
@@ -80,7 +88,10 @@ async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params"
                 {filme.titulo} {filme.ano && <span>({filme.ano})</span>}
               </h1>
               <div className={styles.meta}>
-                <span className={styles.nota}>⭐ {formatarNota(filme.nota)}</span>
+                <span className={styles.nota}>
+                  <span aria-hidden="true">⭐ {formatarNota(filme.nota)}</span>
+                  <span className="sr-only">Nota {formatarNota(filme.nota)} de 10</span>
+                </span>
                 {duracao && <span>{duracao}</span>}
                 {filme.generos.map((g) => (
                   <span key={g} className={styles.genero}>

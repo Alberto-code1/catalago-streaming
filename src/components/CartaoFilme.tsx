@@ -25,14 +25,17 @@ export function CartaoFilme({ filme, servico }: Props) {
         ) : (
           <span className={styles.semCapa}>{filme.titulo}</span>
         )}
-        <span className={styles.nota}>⭐ {formatarNota(filme.nota)}</span>
+        <span className={styles.nota}>
+          <span aria-hidden="true">⭐ {formatarNota(filme.nota)}</span>
+          <span className="sr-only">Nota {formatarNota(filme.nota)} de 10</span>
+        </span>
         {servico && (
           <span className={styles.selo} style={{ background: servico.cor }}>
             {servico.nome}
           </span>
         )}
       </div>
-      <h3 className={styles.titulo}>{filme.titulo}</h3>
+      <h2 className={styles.titulo}>{filme.titulo}</h2>
       <p className={styles.ano}>{filme.ano}</p>
     </Link>
   );

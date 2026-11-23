@@ -15,8 +15,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={geist.variable}>
       <body>
+        <a href="#conteudo" className="pular">
+          Pular para o conteúdo
+        </a>
         <Topo />
-        <main id="conteudo">{children}</main>
+        <main id="conteudo" tabIndex={-1}>
+          {children}
+        </main>
         <Rodape />
       </body>
     </html>

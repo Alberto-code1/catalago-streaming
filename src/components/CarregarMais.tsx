@@ -4,6 +4,7 @@ import { useState } from "react";
 import { juntarSemRepetir } from "@/lib/discover";
 import { servicoPorSlug } from "@/lib/servicos";
 import type { FilmeResumo, PaginaFilmes } from "@/lib/tipos";
+import { EsqueletoGrade } from "./Esqueleto";
 import { GradeFilmes } from "./GradeFilmes";
 import styles from "./CarregarMais.module.css";
 
@@ -52,6 +53,7 @@ export function CarregarMais({ servico, paginaInicial, totalPaginas, idsIniciais
       <div aria-live="polite">
         {extras.length > 0 && <GradeFilmes filmes={extras} servico={servicoPorSlug(servico)} />}
       </div>
+      {carregando && <EsqueletoGrade quantidade={20} />}
       {erro && (
         <p className={styles.erro} role="alert">
           {erro}

@@ -50,3 +50,49 @@ main {
   margin: 0 auto;
   padding: 0 16px 32px;
 }
+
+/* ---------- Acessibilidade ---------- */
+
+/* Texto que só leitores de tela "veem" */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Contorno bem visível em quem recebe o foco pelo teclado (Tab) */
+a:focus-visible,
+button:focus-visible,
+iframe:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Link "Pular para o conteúdo": escondido até receber o foco */
+.pular {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 10;
+  background: var(--destaque);
+  color: #111;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 8px;
+}
+
+.pular:focus {
+  top: 12px;
+}
+
+/* O <main> recebe foco pelo link "Pular", mas não precisa de contorno */
+main:focus {
+  outline: none;
+}

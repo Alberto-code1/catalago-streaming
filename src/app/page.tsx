@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { CarregarMais } from "@/components/CarregarMais";
+import { EsqueletoFiltro, EsqueletoGrade } from "@/components/Esqueleto";
 import { FiltroServicos } from "@/components/FiltroServicos";
 import { GradeFilmes } from "@/components/GradeFilmes";
 import { servicoPorSlug } from "@/lib/servicos";
@@ -14,7 +15,15 @@ export default function Home({ searchParams }: PageProps<"/">) {
         Populares agora <small>disponíveis no Brasil, inclusos na assinatura ou grátis</small>
       </h1>
       {/* O filtro depende do endereço (?servico=...), então carrega dentro do Suspense */}
-      <Suspense fallback={<p className={styles.carregando}>Carregando filmes…</p>}>
+      <Suspense
+        fallback={
+          <div role="status">
+            <span className="sr-only">Carregando filmes…</span>
+            <EsqueletoFiltro />
+            <EsqueletoGrade quantidade={20} />
+          </div>
+        }
+      >
         <Catalogo searchParams={searchParams} />
       </Suspense>
     </>
