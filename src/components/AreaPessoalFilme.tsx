@@ -20,6 +20,9 @@ export async function AreaPessoalFilme({ filmeId }: { filmeId: number }) {
           <Link href={entrar} className={styles.botao}>
             + Quero assistir
           </Link>
+          <Link href={entrar} className={styles.botao}>
+            Já assisti
+          </Link>
         </div>
         <p className={styles.dica}>Entre para guardar seus filmes.</p>
       </div>

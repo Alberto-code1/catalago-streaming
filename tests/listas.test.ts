@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LIMITES, lerAba, lerIdFilme } from "@/lib/listas";
+import { LIMITES, lerAba, lerIdFilme, lerNota } from "@/lib/listas";
 
 describe("lerIdFilme", () => {
   it("aceita ids de filme válidos (número ou texto)", () => {
@@ -26,5 +26,19 @@ describe("lerAba", () => {
 describe("LIMITES", () => {
   it("são os combinados no design", () => {
     expect(LIMITES).toEqual({ quero: 500, assistidos: 2000, vistos: 20, buscas: 5, porPagina: 24 });
+  });
+});
+
+describe("lerNota", () => {
+  it("aceita gostei, nao_gostei e nenhuma (null)", () => {
+    expect(lerNota("gostei")).toBe("gostei");
+    expect(lerNota("nao_gostei")).toBe("nao_gostei");
+    expect(lerNota(null)).toBeNull();
+  });
+
+  it("recusa qualquer outra coisa (undefined)", () => {
+    for (const valor of ["amei", 1, undefined, "GOSTEI"]) {
+      expect(lerNota(valor)).toBeUndefined();
+    }
   });
 });

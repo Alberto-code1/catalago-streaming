@@ -60,6 +60,65 @@ export async function listarQuero(usuarioId: string, pagina: number): Promise<{ 
   return { ids: linhas.map((l) => l.filmeId), total };
 }
 
+/**
+ * Marca ou desmarca o filme como assistido.
+ * Ao marcar, ele sai de "Quero assistir" na mesma operação (as duas coisas acontecem juntas ou nenhuma).
+ * Ao desmarcar, a nota vai junto.
+ */
+export async function marcarAssistido(usuarioId: string, filmeId: number, marcado: boolean): Promise<"ok" | "limite"> {
+  const daPessoa = eq(assistidos.usuarioId, usuarioId);
+  const esteFilme = and(daPessoa, eq(assistidos.filmeId, filmeId));
+  if (!marcado) {
+    await db.delete(assistidos).where(esteFilme);
+    return "ok";
+  }
+  return db.transaction(async (tx) => {
+    const [{ total }] = await tx.select({ total: count() }).from(assistidos).where(daPessoa);
+    if (total >= LIMITES.assistidos) {
+      const jaTem = await tx.select().from(assistidos).where(esteFilme);
+      if (jaTem.length === 0) return "limite" as const;
+    }
+    await tx.insert(assistidos).values({ usuarioId, filmeId }).onConflictDoNothing();
+    await tx
+      .delete(queroAssistir)
+      .where(and(eq(queroAssistir.usuarioId, usuarioId), eq(queroAssistir.filmeId, filmeId)));
+    return "ok" as const;
+  });
+}
+
+/** Dá ou tira a nota (👍/👎) de um filme. Só vale para filmes já marcados como assistidos. */
+export async function darNota(usuarioId: string, filmeId: number, nota: Nota): Promise<void> {
+  await db
+    .update(assistidos)
+    .set({ nota })
+    .where(and(eq(assistidos.usuarioId, usuarioId), eq(assistidos.filmeId, filmeId)));
+}
+
+/** Uma página de "Já assisti", o mais recente primeiro, com a nota de cada um. */
+export async function listarAssistidos(
+  usuarioId: string,
+  pagina: number,
+): Promise<{ itens: { filmeId: number; nota: Nota }[]; total: number }> {
+  const daPessoa = eq(assistidos.usuarioId, usuarioId);
+  const [linhas, [{ total }]] = await Promise.all([
+    db
+      .select({ filmeId: assistidos.filmeId, nota: assistidos.nota })
+      .from(assistidos)
+      .where(daPessoa)
+      .orderBy(desc(assistidos.criadoEm), desc(assistidos.filmeId))
+      .limit(LIMITES.porPagina)
+      .offset((pagina - 1) * LIMITES.porPagina),
+    db.select({ total: count() }).from(assistidos).where(daPessoa),
+  ]);
+  return { itens: linhas.map((l) => ({ filmeId: l.filmeId, nota: (l.nota as Nota) ?? null })), total };
+}
+
+/** Os ids de todos os filmes assistidos (para a marquinha "✓ visto" nos cartões). */
+export async function idsAssistidos(usuarioId: string): Promise<number[]> {
+  const linhas = await db.select({ filmeId: assistidos.filmeId }).from(assistidos).where(eq(assistidos.usuarioId, usuarioId));
+  return linhas.map((l) => l.filmeId);
+}
+
 /** Tira um filme de uma das três listas da Minha conta. */
 export async function removerDe(usuarioId: string, lista: Aba, filmeId: number): Promise<void> {
   if (lista === "quero") {

@@ -20,6 +20,11 @@ export function lerIdFilme(valor: unknown): number | null {
 /** A nota de um filme assistido: gostei, não gostei ou nenhuma. */
 export type Nota = "gostei" | "nao_gostei" | null;
 
+/** Confere uma nota vinda do navegador. undefined = valor inválido (a ação é recusada). */
+export function lerNota(valor: unknown): Nota | undefined {
+  return valor === "gostei" || valor === "nao_gostei" || valor === null ? valor : undefined;
+}
+
 /** As abas da página Minha conta. */
 export type Aba = "quero" | "assistidos" | "recentes";
 
