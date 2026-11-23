@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { CarregarMais } from "@/components/CarregarMais";
 import { EsqueletoFiltro, EsqueletoGrade } from "@/components/Esqueleto";
+import { FiltroGenero } from "@/components/FiltroGenero";
 import { FiltroServicos } from "@/components/FiltroServicos";
 import { GradeFilmes } from "@/components/GradeFilmes";
 import { lerGenero } from "@/lib/generos";
@@ -41,10 +42,17 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
   const genero = lerGenero(valorGenero, generos);
   const { filmes, pagina, totalPaginas } = await buscarFilmes(servico?.slug, 1, genero?.id);
 
+  // Serviços + botão de gênero (o botão só aparece se a lista de gêneros carregou)
+  const filtros = (
+    <FiltroServicos ativo={servico?.slug} genero={genero?.id}>
+      {generos && <FiltroGenero generos={generos} ativo={genero?.id} servico={servico?.slug} />}
+    </FiltroServicos>
+  );
+
   if (filmes.length === 0) {
     return (
       <>
-        <FiltroServicos ativo={servico?.slug} />
+        {filtros}
         <p className={styles.vazio}>Nenhum filme encontrado com estes filtros.</p>
       </>
     );
@@ -52,7 +60,7 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
 
   return (
     <>
-      <FiltroServicos ativo={servico?.slug} />
+      {filtros}
       {/* As 6 primeiras capas aparecem sem rolar a tela: carregam já */}
       <GradeFilmes filmes={filmes} servico={servico} capasImediatas={6} />
       {/* key: ao trocar de filtro, o botão recomeça do zero */}

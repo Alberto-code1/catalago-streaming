@@ -21,3 +21,19 @@ describe("hrefCatalogo", () => {
     expect(hrefCatalogo(undefined)).toBe("/");
   });
 });
+
+describe("links com gênero", () => {
+  test("o catálogo leva serviço e gênero, nessa ordem", () => {
+    expect(hrefCatalogo("netflix", 35)).toBe("/?servico=netflix&genero=35");
+    expect(hrefCatalogo(undefined, 35)).toBe("/?genero=35");
+  });
+
+  test("serviço inválido sai do link, o gênero fica", () => {
+    expect(hrefCatalogo("xpto", 35)).toBe("/?genero=35");
+  });
+
+  test("a página do filme também leva os dois", () => {
+    expect(hrefFilme(27205, "netflix", 35)).toBe("/filme/27205?servico=netflix&genero=35");
+    expect(hrefFilme(27205, undefined, 35)).toBe("/filme/27205?genero=35");
+  });
+});

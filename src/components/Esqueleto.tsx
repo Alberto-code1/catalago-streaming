@@ -15,11 +15,12 @@ export function EsqueletoGrade({ quantidade }: { quantidade: number }) {
   );
 }
 
-/** Os botões de filtro em versão "esqueleto". */
+/** Os botões de filtro (serviços e gênero) em versão "esqueleto". */
 export function EsqueletoFiltro() {
   return (
     <div className={styles.filtro} aria-hidden="true">
-      {Array.from({ length: 6 }, (_, i) => (
+      {/* 6 serviços + o botão de gênero */}
+      {Array.from({ length: 7 }, (_, i) => (
         <div key={i} className={`${styles.bloco} ${styles.pilula}`} />
       ))}
     </div>
