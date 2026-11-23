@@ -4,11 +4,14 @@ import { cacheLife } from "next/cache";
 import { montarResultados } from "./busca";
 import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
-import { escolherTrailer, extrairOndeAssistir } from "./filme";
+import { escolherSinopse, escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
 import type { DetalheFilme, FilmeResumo, Genero, PaginaFilmes, ResultadoBusca, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
+
+/** Quanto tempo esperar o TMDB antes de desistir (8 segundos). */
+const TEMPO_LIMITE_MS = 8_000;
 
 /**
  * Faz um pedido ao TMDB usando o token secreto e devolve a resposta já convertida.
@@ -22,12 +25,22 @@ export async function tmdbFetch<T>(caminho: string, params: Record<string, strin
   const url = new URL(BASE + caminho);
   for (const [chave, valor] of Object.entries(params)) url.searchParams.set(chave, String(valor));
 
+  // Cronômetro: se o TMDB não responder a tempo, o pedido é cancelado
+  const cancelador = new AbortController();
+  const cronometro = setTimeout(() => cancelador.abort(), TEMPO_LIMITE_MS);
+
   let resposta: Response;
   try {
-    resposta = await fetch(url, { headers: { Authorization: `Bearer ${token}`, Accept: "application/json" } });
+    resposta = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+      signal: cancelador.signal,
+    });
   } catch {
+    if (cancelador.signal.aborted) throw new TmdbErro(`O TMDB demorou demais em ${caminho}`, 504);
     // Internet caiu, DNS falhou, conexão recusada: também é "o TMDB não respondeu"
     throw new TmdbErro(`Sem conexão com o TMDB em ${caminho}`, 503);
+  } finally {
+    clearTimeout(cronometro);
   }
   if (!resposta.ok) throw new TmdbErro(`TMDB respondeu ${resposta.status} em ${caminho}`, resposta.status);
   return (await resposta.json()) as T;
@@ -164,11 +177,10 @@ export async function buscarDetalhes(id: number): Promise<DetalheFilme | null> {
   }
 
   // Sem sinopse em português? Usa a em inglês.
-  let sinopse = f.overview;
-  if (!sinopse) {
+  const sinopse = await escolherSinopse(f.overview, async () => {
     const emIngles = await tmdbFetch<{ overview: string }>(`/movie/${id}`, { language: "en-US" });
-    sinopse = emIngles.overview;
-  }
+    return emIngles.overview;
+  });
 
   return {
     id: f.id,

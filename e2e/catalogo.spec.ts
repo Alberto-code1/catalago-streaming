@@ -85,3 +85,10 @@ test("se o servidor responder sem JSON, a mensagem é em português", async ({ p
     page.getByRole("alert").filter({ hasText: "Não foi possível carregar os filmes agora. Tente de novo em instantes." }),
   ).toBeVisible();
 });
+
+test("endereço que não existe mostra página em português com status 404", async ({ page }) => {
+  const resposta = await page.goto("/pagina-que-nao-existe");
+  expect(resposta?.status()).toBe(404);
+  await expect(page.getByRole("heading", { name: "Página não encontrada" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Voltar ao catálogo/ })).toBeVisible();
+});
