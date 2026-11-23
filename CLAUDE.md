@@ -10,6 +10,13 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 - Design: [docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md](docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md)
 - Plano: [docs/superpowers/plans/2026-11-22-catalogo-streaming.md](docs/superpowers/plans/2026-11-22-catalogo-streaming.md)
 
+## Fases
+
+- **Fase 1 (concluída):** catálogo, filtro por serviço, carregar mais, página do filme, acabamento profissional.
+- **Fase 2 (concluída):** filtro por gênero (`?genero=<id do TMDB>`, combina com o serviço) e busca por nome (`/busca?q=`), com selo "✓ serviços" ou "Indisponível" (só os 5 serviços do site contam). Design: [docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md](docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md)
+- **Fase 3 (próxima):** login, banco de dados, lista "quero assistir", LGPD.
+- Fluxo desde a Fase 2: trabalhar num ramo, abrir Pull Request (prévia da Vercel + robô "Qualidade") e só então juntar na `main`.
+
 ## Como trabalhar com o dono
 
 - Ele é iniciante e fala português. Explique cada passo em português simples, sem jargão (ou explique o jargão).
