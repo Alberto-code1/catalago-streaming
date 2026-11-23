@@ -5,6 +5,8 @@
 Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados do TMDB.
 É um **projeto de estudo**: o dono está aprendendo a usar o Claude Code e a construir sites completos.
 
+- **Site no ar:** https://catalogo-streaming-one.vercel.app (Vercel, publica sozinho a cada push na `main`)
+- **Código:** https://github.com/Alberto-code1/catalago-streaming
 - Design: [docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md](docs/superpowers/specs/2026-11-22-catalogo-streaming-design.md)
 - Plano: [docs/superpowers/plans/2026-11-22-catalogo-streaming.md](docs/superpowers/plans/2026-11-22-catalogo-streaming.md)
 
