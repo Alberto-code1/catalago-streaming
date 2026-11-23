@@ -1,0 +1,59 @@
+# Robô de qualidade: a cada envio (push) ou pull request na main,
+# o GitHub instala o projeto do zero e roda todas as verificações.
+# Se alguma falhar, aparece um ❌ no GitHub.
+name: Qualidade
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Se chegar um envio novo, cancela a verificação antiga do mesmo ramo
+concurrency:
+  group: qualidade-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # O token vem dos "Secrets" do repositório; nunca aparece nos registros
+      TMDB_READ_TOKEN: ${{ secrets.TMDB_READ_TOKEN }}
+      CI: true
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar o Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Procurar problemas no código (lint)
+        run: npm run lint
+
+      - name: Testes unitários
+        run: npm test
+
+      - name: Montar a versão de produção (build)
+        run: npm run build
+
+      - name: Instalar o navegador do robô
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes de ponta a ponta
+        run: npm run test:e2e
+
+      - name: Guardar o relatório do Playwright se algo falhar
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-playwright
+          path: test-results/
+          retention-days: 7
