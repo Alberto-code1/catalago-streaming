@@ -21,5 +21,7 @@ export default defineConfig({
     port: 3000,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // Liga a "pessoa de teste" (login por e-mail e senha só para o robô)
+    env: { LOGIN_DE_TESTE: "1" },
   },
 });

@@ -40,6 +40,8 @@ jobs:
       BETTER_AUTH_URL: http://localhost:3000
       GOOGLE_CLIENT_ID: teste
       GOOGLE_CLIENT_SECRET: teste
+      # Liga a "pessoa de teste": o robô entra sem a conta Google (nunca vale na Vercel)
+      LOGIN_DE_TESTE: "1"
     steps:
       - name: Baixar o código
         uses: actions/checkout@v4
