@@ -2,10 +2,12 @@ import type { NextRequest } from "next/server";
 import { lerPagina } from "@/lib/discover";
 import { servicoPorSlug } from "@/lib/servicos";
 import { ehErroTmdb } from "@/lib/erros";
-import { buscarFilmes } from "@/lib/tmdb";
+import { lerGenero } from "@/lib/generos";
+import { buscarFilmes, buscarGeneros } from "@/lib/tmdb";
+import type { Genero } from "@/lib/tipos";
 
 /**
- * GET /api/filmes?servico=netflix&pagina=2
+ * GET /api/filmes?servico=netflix&genero=35&pagina=2
  * Devolve mais uma página de filmes para o botão "Carregar mais".
  * Roda no servidor: o navegador nunca vê o token do TMDB.
  */
@@ -13,9 +15,12 @@ export async function GET(request: NextRequest) {
   const busca = request.nextUrl.searchParams;
   const servico = servicoPorSlug(busca.get("servico"));
   const pagina = lerPagina(busca.get("pagina"));
+  // Gênero só vale se estiver na lista do TMDB; se a lista falhar, é ignorado
+  const generos = await buscarGeneros().catch((): Genero[] | null => null);
+  const genero = lerGenero(busca.get("genero"), generos);
 
   try {
-    const resultado = await buscarFilmes(servico?.slug, pagina);
+    const resultado = await buscarFilmes(servico?.slug, pagina, genero?.id);
     // Pediram uma página depois da última: devolve lista vazia
     if (pagina > resultado.totalPaginas) {
       return Response.json({ filmes: [], pagina, totalPaginas: resultado.totalPaginas });

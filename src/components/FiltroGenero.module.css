@@ -1,0 +1,83 @@
+.menu {
+  position: relative;
+}
+
+/* O "botão" que abre a lista: mesmo formato das pílulas de serviço */
+.botao {
+  list-style: none;
+  cursor: pointer;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--superficie-2);
+  border: 1px solid #2a3042;
+  color: #c4c9d6;
+  user-select: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+/* Esconde o triângulo padrão do navegador */
+.botao::-webkit-details-marker {
+  display: none;
+}
+
+.botao:hover {
+  border-color: var(--destaque);
+  color: var(--texto);
+}
+
+.botao:focus-visible {
+  outline: 2px solid var(--destaque);
+  outline-offset: 3px;
+}
+
+/* Gênero escolhido: contorno amarelo (o amarelo cheio é do serviço) */
+.ativo {
+  border-color: var(--destaque);
+  color: var(--texto);
+}
+
+.lista {
+  list-style: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  width: 210px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--superficie-2);
+  border: 1px solid #2a3042;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+}
+
+.opcao {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #c4c9d6;
+}
+
+.opcao:hover {
+  background: #252a38;
+  color: var(--texto);
+}
+
+.selecionada,
+.selecionada:hover {
+  background: var(--destaque);
+  color: #111;
+  font-weight: 700;
+}
+
+/* No celular, a lista não pode sair da tela pela direita */
+@media (max-width: 480px) {
+  .lista {
+    left: auto;
+    right: 0;
+  }
+}

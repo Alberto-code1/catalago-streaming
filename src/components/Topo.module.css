@@ -23,7 +23,6 @@
 }
 
 .menu {
-  margin-left: auto;
   font-size: 14px;
   font-weight: 600;
   color: var(--texto-2);
@@ -31,4 +30,22 @@
 
 .menu a:hover {
   color: var(--destaque);
+}
+
+/* No celular: logo em cima, busca ocupando a largura embaixo */
+@media (max-width: 560px) {
+  .dentro {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .menu {
+    margin-left: auto;
+  }
+
+  .dentro > form {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
 }

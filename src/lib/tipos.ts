@@ -1,10 +1,22 @@
 // Formatos de dados usados no site inteiro.
 
+/** Um gênero de filme (lista do TMDB, em português). */
+export type Genero = { id: number; nome: string };
+
 /** Um serviço de streaming que aparece nos botões de filtro. */
 export type Servico = { slug: string; nome: string; providerId: number; cor: string };
 
 /** O resumo de um filme, usado nos cartões da grade. */
 export type FilmeResumo = { id: number; titulo: string; ano: string; nota: number; capa: string | null };
+
+/**
+ * Um filme da busca, com os serviços do site onde ele está.
+ * servicos: null = não deu para saber (falha); [] = indisponível nos 5 serviços.
+ */
+export type FilmeBuscado = FilmeResumo & { servicos: Servico[] | null };
+
+/** O resultado de uma busca: até 20 filmes, e se o TMDB tinha mais. */
+export type ResultadoBusca = { filmes: FilmeBuscado[]; temMais: boolean };
 
 /** Uma página de resultados do catálogo. */
 export type PaginaFilmes = { filmes: FilmeResumo[]; pagina: number; totalPaginas: number };

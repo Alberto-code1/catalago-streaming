@@ -1,11 +1,12 @@
 import "server-only"; // garante que este arquivo (e o token) nunca vá para o navegador
 
 import { cacheLife } from "next/cache";
+import { montarResultados } from "./busca";
 import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
-import type { DetalheFilme, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
+import type { DetalheFilme, Genero, PaginaFilmes, ResultadoBusca, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
 
@@ -42,11 +43,15 @@ type TmdbDiscover = {
  * Uma página do catálogo: filmes disponíveis no Brasil, do serviço escolhido (ou de todos).
  * "use cache" guarda o resultado por algumas horas, para o site ficar rápido.
  */
-export async function buscarFilmes(slug: string | null | undefined, pagina: number): Promise<PaginaFilmes> {
+export async function buscarFilmes(
+  slug: string | null | undefined,
+  pagina: number,
+  genero?: number,
+): Promise<PaginaFilmes> {
   "use cache";
   cacheLife("hours");
 
-  const dados = await tmdbFetch<TmdbDiscover>("/discover/movie", montarParametrosDiscover(slug, pagina));
+  const dados = await tmdbFetch<TmdbDiscover>("/discover/movie", montarParametrosDiscover(slug, pagina, genero));
   return {
     pagina: dados.page,
     totalPaginas: Math.min(dados.total_pages, LIMITE_PAGINAS),
@@ -58,6 +63,58 @@ export async function buscarFilmes(slug: string | null | undefined, pagina: numb
       capa: urlImagem(f.poster_path, "w342"),
     })),
   };
+}
+
+type TmdbBusca = {
+  total_results: number;
+  results: { id: number; title: string; release_date?: string; vote_average: number; poster_path: string | null }[];
+};
+
+/** Busca filmes pelo nome (em todos os filmes do TMDB, disponíveis ou não). Até 20 resultados. */
+export async function buscarResultados(texto: string): Promise<ResultadoBusca> {
+  "use cache";
+  cacheLife("hours");
+
+  const dados = await tmdbFetch<TmdbBusca>("/search/movie", {
+    query: texto,
+    language: "pt-BR",
+    include_adult: "false",
+    page: 1,
+  });
+  const filmes = dados.results.slice(0, 20).map((f) => ({
+    id: f.id,
+    titulo: f.title,
+    ano: extrairAno(f.release_date),
+    nota: f.vote_average,
+    capa: urlImagem(f.poster_path, "w342"),
+  }));
+
+  // Pergunta "onde está?" para TODOS os filmes ao mesmo tempo (em paralelo).
+  // "allSettled" espera todos terminarem, mesmo se algum falhar: o que falhou fica sem selo.
+  const respostas = await Promise.allSettled(filmes.map((f) => buscarIdsDisponiveis(f.id)));
+  const ids = respostas.map((r) => (r.status === "fulfilled" ? r.value : null));
+
+  return montarResultados(filmes, ids, dados.total_results);
+}
+
+/** Os códigos dos serviços onde o filme está no Brasil (assinatura, grátis ou com anúncios). */
+export async function buscarIdsDisponiveis(id: number): Promise<number[]> {
+  "use cache";
+  cacheLife("hours");
+
+  const dados = await tmdbFetch<{ results: { BR?: TmdbProvedoresBR } }>(`/movie/${id}/watch/providers`);
+  return extrairOndeAssistir(dados.results.BR).map((p) => p.id);
+}
+
+/** A lista de gêneros de filmes do TMDB, em português e em ordem alfabética. Muda raramente: cache de dias. */
+export async function buscarGeneros(): Promise<Genero[]> {
+  "use cache";
+  cacheLife("days");
+
+  const { genres } = await tmdbFetch<{ genres: { id: number; name: string }[] }>("/genre/movie/list", {
+    language: "pt-BR",
+  });
+  return genres.map((g) => ({ id: g.id, nome: g.name })).sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
 }
 
 type TmdbDetalhe = {

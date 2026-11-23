@@ -13,6 +13,8 @@ const MENSAGEM_DE_ERRO = "Não foi possível carregar os filmes agora. Tente de 
 type Props = {
   /** Apelido do serviço filtrado (ou nada, para "Todos"). */
   servico?: string;
+  /** Id do gênero filtrado (ou nada, para todos). */
+  genero?: number;
   /** A página que já veio do servidor (normalmente 1). */
   paginaInicial: number;
   totalPaginas: number;
@@ -21,7 +23,7 @@ type Props = {
 };
 
 /** O botão "Carregar mais filmes" e os filmes que ele vai acrescentando. */
-export function CarregarMais({ servico, paginaInicial, totalPaginas, idsIniciais }: Props) {
+export function CarregarMais({ servico, genero, paginaInicial, totalPaginas, idsIniciais }: Props) {
   const [extras, setExtras] = useState<FilmeResumo[]>([]);
   const [pagina, setPagina] = useState(paginaInicial);
   const [total, setTotal] = useState(totalPaginas);
@@ -34,6 +36,7 @@ export function CarregarMais({ servico, paginaInicial, totalPaginas, idsIniciais
     try {
       const params = new URLSearchParams({ pagina: String(pagina + 1) });
       if (servico) params.set("servico", servico);
+      if (genero !== undefined) params.set("genero", String(genero));
       const resposta = await fetch(`/api/filmes?${params}`);
       if (!resposta.ok) throw new Error("resposta com erro");
       const { filmes, pagina: nova, totalPaginas: novoTotal } = (await resposta.json()) as PaginaFilmes;
@@ -53,7 +56,7 @@ export function CarregarMais({ servico, paginaInicial, totalPaginas, idsIniciais
   return (
     <>
       <div aria-live="polite">
-        {extras.length > 0 && <GradeFilmes filmes={extras} servico={servicoPorSlug(servico)} />}
+        {extras.length > 0 && <GradeFilmes filmes={extras} servico={servicoPorSlug(servico)} genero={genero} />}
       </div>
       {carregando && <EsqueletoGrade quantidade={20} />}
       {erro && (

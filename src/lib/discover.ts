@@ -35,10 +35,16 @@ export function juntarSemRepetir(atuais: FilmeResumo[], novos: FilmeResumo[]): F
  * Monta os parâmetros do pedido "/discover/movie" ao TMDB:
  * filmes disponíveis no Brasil, na assinatura ou grátis, mais populares primeiro.
  * Sem serviço (ou com um apelido desconhecido), busca nos 5 serviços juntos.
+ * Com gênero (id do TMDB), mostra só filmes daquele gênero.
  */
-export function montarParametrosDiscover(slug: string | null | undefined, pagina: number): Record<string, string> {
+export function montarParametrosDiscover(
+  slug: string | null | undefined,
+  pagina: number,
+  genero?: number,
+): Record<string, string> {
   const servico = servicoPorSlug(slug);
   return {
+    ...(genero !== undefined && { with_genres: String(genero) }),
     watch_region: "BR",
     with_watch_monetization_types: "flatrate|free|ads",
     sort_by: "popularity.desc",
