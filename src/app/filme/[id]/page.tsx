@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { Elenco } from "@/components/Elenco";
 import { EsqueletoFilme } from "@/components/Esqueleto";
 import { Trailer } from "@/components/Trailer";
-import { formatarDuracao, formatarNota } from "@/lib/formatar";
+import { formatarDuracao, formatarNota, resumir } from "@/lib/formatar";
 import { buscarDetalhes, buscarFilmes } from "@/lib/tmdb";
 import styles from "./page.module.css";
 
@@ -33,10 +33,24 @@ export async function generateMetadata({ params }: PageProps<"/filme/[id]">): Pr
   const id = lerId((await params).id);
   try {
     const filme = id ? await buscarDetalhes(id) : null;
-    return { title: filme ? `${filme.titulo} · Catálogo Streaming` : "Filme não encontrado · Catálogo Streaming" };
+    if (!filme) return { title: "Filme não encontrado" };
+
+    // Título, descrição e imagem que aparecem no Google e ao compartilhar o link
+    const descricao = resumir(filme.sinopse, 160) || `Onde assistir ${filme.titulo} nos streamings do Brasil.`;
+    const imagem = filme.fundo ?? filme.capa;
+    return {
+      title: filme.ano ? `${filme.titulo} (${filme.ano})` : filme.titulo,
+      description: descricao,
+      openGraph: {
+        type: "video.movie",
+        title: filme.titulo,
+        description: descricao,
+        ...(imagem && { images: [{ url: imagem, alt: filme.titulo }] }),
+      },
+    };
   } catch {
-    // Se o TMDB falhar, a página mostra a mensagem de erro; aqui só damos um título genérico
-    return { title: "Catálogo Streaming" };
+    // Se o TMDB falhar, a página mostra a mensagem de erro; aqui fica o título padrão
+    return {};
   }
 }
 

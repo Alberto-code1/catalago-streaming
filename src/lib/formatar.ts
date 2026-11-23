@@ -34,3 +34,9 @@ export function iniciais(nome: string): string {
   const ultima = partes.length > 1 ? partes[partes.length - 1][0] : "";
   return (primeira + ultima).toUpperCase();
 }
+
+/** Corta um texto longo no limite, sem partir palavras, e põe "…" no fim. */
+export function resumir(texto: string, limite: number): string {
+  if (texto.length <= limite) return texto;
+  return texto.slice(0, limite - 1).replace(/\s+\S*$/, "") + "…";
+}

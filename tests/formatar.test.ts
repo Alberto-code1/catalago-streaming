@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { extrairAno, formatarDuracao, formatarNota, iniciais, urlImagem } from "@/lib/formatar";
+import { extrairAno, formatarDuracao, formatarNota, iniciais, resumir, urlImagem } from "@/lib/formatar";
 
 describe("formatarNota", () => {
   test("mostra uma casa decimal com ponto", () => {
@@ -50,5 +50,19 @@ describe("iniciais", () => {
 
   test("usa uma letra quando há um nome só", () => {
     expect(iniciais("Zendaya")).toBe("Z");
+  });
+});
+
+describe("resumir", () => {
+  test("não mexe em texto curto", () => {
+    expect(resumir("Um filme curto.", 160)).toBe("Um filme curto.");
+  });
+
+  test("corta texto longo sem partir palavras e põe reticências", () => {
+    expect(resumir("Paul Atreides se une aos Fremen", 20)).toBe("Paul Atreides se…");
+  });
+
+  test("o resultado nunca passa do limite", () => {
+    expect(resumir("a".repeat(300), 160).length).toBeLessThanOrEqual(160);
   });
 });
