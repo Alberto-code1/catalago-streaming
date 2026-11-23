@@ -31,3 +31,16 @@ export function extrairOndeAssistir(br: TmdbProvedoresBR | undefined): Provedor[
   }
   return resultado;
 }
+
+/**
+ * Escolhe a sinopse: a em português, se existir; senão, pede a em inglês.
+ * Se esse pedido extra falhar, devolve "" (a página aparece sem sinopse, mas não cai).
+ */
+export async function escolherSinopse(emPortugues: string, buscarIngles: () => Promise<string>): Promise<string> {
+  if (emPortugues) return emPortugues;
+  try {
+    return (await buscarIngles()) ?? "";
+  } catch {
+    return "";
+  }
+}

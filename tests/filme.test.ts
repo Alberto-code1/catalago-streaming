@@ -1,5 +1,5 @@
-import { describe, expect, test } from "vitest";
-import { escolherTrailer, extrairOndeAssistir } from "@/lib/filme";
+import { describe, expect, test, vi } from "vitest";
+import { escolherSinopse, escolherTrailer, extrairOndeAssistir } from "@/lib/filme";
 
 const video = (key: string, lang: string, type = "Trailer", site = "YouTube", official = false) => ({
   key,
@@ -42,5 +42,24 @@ describe("extrairOndeAssistir", () => {
 
   test("devolve lista vazia quando o filme não está em streaming no Brasil", () => {
     expect(extrairOndeAssistir(undefined)).toEqual([]);
+  });
+});
+
+describe("escolherSinopse", () => {
+  test("usa a sinopse em português quando existe, sem pedir a em inglês", async () => {
+    const buscarIngles = vi.fn();
+    expect(await escolherSinopse("Um filme brasileiro.", buscarIngles)).toBe("Um filme brasileiro.");
+    expect(buscarIngles).not.toHaveBeenCalled();
+  });
+
+  test("sem sinopse em português, usa a em inglês", async () => {
+    expect(await escolherSinopse("", async () => "An English overview.")).toBe("An English overview.");
+  });
+
+  test("se a busca em inglês falhar, fica sem sinopse em vez de derrubar a página", async () => {
+    const falha = async () => {
+      throw new Error("TMDB fora do ar");
+    };
+    expect(await escolherSinopse("", falha)).toBe("");
   });
 });
