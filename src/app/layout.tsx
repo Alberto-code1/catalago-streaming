@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Rodape } from "@/components/Rodape";
@@ -36,6 +38,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Rodape />
+        {/* Estatísticas da Vercel: visitas (sem cookies) e velocidade real dos visitantes */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
