@@ -6,7 +6,7 @@ import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
-import type { DetalheFilme, Genero, PaginaFilmes, ResultadoBusca, TmdbProvedoresBR, TmdbVideo } from "./tipos";
+import type { DetalheFilme, FilmeResumo, Genero, PaginaFilmes, ResultadoBusca, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
 
@@ -70,8 +70,25 @@ type TmdbBusca = {
   results: { id: number; title: string; release_date?: string; vote_average: number; poster_path: string | null }[];
 };
 
-/** Busca filmes pelo nome (em todos os filmes do TMDB, disponíveis ou não). Até 20 resultados. */
+/**
+ * Resultados da busca (em todos os filmes do TMDB, disponíveis ou não; até 20), com o selo de cada filme.
+ * Sem "use cache" aqui de propósito: se a consulta de um filme falhar, ele fica sem selo
+ * só nesta visita. A lista (buscarPorNome) e cada consulta que deu certo
+ * (buscarIdsDisponiveis) já têm cache próprio; a que falhou é tentada de novo na próxima.
+ */
 export async function buscarResultados(texto: string): Promise<ResultadoBusca> {
+  const { filmes, total } = await buscarPorNome(texto);
+
+  // Pergunta "onde está?" para TODOS os filmes ao mesmo tempo (em paralelo).
+  // "allSettled" espera todos terminarem, mesmo se algum falhar: o que falhou fica sem selo.
+  const respostas = await Promise.allSettled(filmes.map((f) => buscarIdsDisponiveis(f.id)));
+  const ids = respostas.map((r) => (r.status === "fulfilled" ? r.value : null));
+
+  return montarResultados(filmes, ids, total);
+}
+
+/** Os 20 filmes mais relevantes para o texto, e quantos o TMDB achou no total. */
+async function buscarPorNome(texto: string): Promise<{ filmes: FilmeResumo[]; total: number }> {
   "use cache";
   cacheLife("hours");
 
@@ -88,13 +105,7 @@ export async function buscarResultados(texto: string): Promise<ResultadoBusca> {
     nota: f.vote_average,
     capa: urlImagem(f.poster_path, "w342"),
   }));
-
-  // Pergunta "onde está?" para TODOS os filmes ao mesmo tempo (em paralelo).
-  // "allSettled" espera todos terminarem, mesmo se algum falhar: o que falhou fica sem selo.
-  const respostas = await Promise.allSettled(filmes.map((f) => buscarIdsDisponiveis(f.id)));
-  const ids = respostas.map((r) => (r.status === "fulfilled" ? r.value : null));
-
-  return montarResultados(filmes, ids, dados.total_results);
+  return { filmes, total: dados.total_results };
 }
 
 /** Os códigos dos serviços onde o filme está no Brasil (assinatura, grátis ou com anúncios). */

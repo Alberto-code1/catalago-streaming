@@ -74,10 +74,16 @@
   font-weight: 700;
 }
 
-/* No celular, a lista não pode sair da tela pela direita */
+/* No celular, a lista abre logo abaixo da fileira de filtros, na largura toda,
+   para nunca sair da tela (presa ao botão, ela podia sumir pela esquerda) */
 @media (max-width: 480px) {
+  .menu {
+    position: static;
+  }
+
   .lista {
-    left: auto;
+    left: 0;
     right: 0;
+    width: auto;
   }
 }

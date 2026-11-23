@@ -2,6 +2,7 @@ import Link from "next/link";
 import { hrefCatalogo } from "@/lib/links";
 import type { Genero } from "@/lib/tipos";
 import styles from "./FiltroGenero.module.css";
+import { MenuFechavel } from "./MenuFechavel";
 
 type Props = {
   generos: Genero[];
@@ -12,7 +13,8 @@ type Props = {
 };
 
 /**
- * O botão "Gênero ▾". É um <details>: abre e fecha sem JavaScript.
+ * O botão "Gênero ▾". É um <details>: abre e fecha sem JavaScript
+ * (e, com JavaScript, também fecha com Esc ou clique fora).
  * Cada gênero é um link (como os botões de serviço), então o filtro fica no endereço.
  */
 export function FiltroGenero({ generos, ativo, servico }: Props) {
@@ -21,7 +23,7 @@ export function FiltroGenero({ generos, ativo, servico }: Props) {
 
   return (
     // key: ao trocar de filtro, o menu volta fechado
-    <details key={`${servico ?? "todos"}-${ativo ?? "todos"}`} className={styles.menu}>
+    <MenuFechavel key={`${servico ?? "todos"}-${ativo ?? "todos"}`} className={styles.menu}>
       <summary className={atual ? `${styles.botao} ${styles.ativo}` : styles.botao}>
         {atual ? `Gênero: ${atual.nome}` : "Gênero"} <span aria-hidden="true">▾</span>
       </summary>
@@ -33,7 +35,8 @@ export function FiltroGenero({ generos, ativo, servico }: Props) {
               <Link
                 href={hrefCatalogo(servico, g.id)}
                 className={selecionado ? `${styles.opcao} ${styles.selecionada}` : styles.opcao}
-                aria-current={selecionado ? "page" : undefined}
+                // "true" (e não "page"): a página atual já é marcada pelo botão de serviço
+                aria-current={selecionado ? "true" : undefined}
               >
                 {g.nome}
               </Link>
@@ -41,6 +44,6 @@ export function FiltroGenero({ generos, ativo, servico }: Props) {
           );
         })}
       </ul>
-    </details>
+    </MenuFechavel>
   );
 }
