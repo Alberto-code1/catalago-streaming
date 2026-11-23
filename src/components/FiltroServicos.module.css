@@ -1,0 +1,29 @@
+.filtro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 18px 0 4px;
+}
+
+.pilula {
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--superficie-2);
+  border: 1px solid #2a3042;
+  color: #c4c9d6;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.pilula:hover {
+  border-color: var(--destaque);
+  color: var(--texto);
+}
+
+.ativa,
+.ativa:hover {
+  background: var(--destaque);
+  border-color: var(--destaque);
+  color: #111;
+}
