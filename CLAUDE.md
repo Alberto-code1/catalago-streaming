@@ -22,8 +22,20 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 - Todo arquivo que chama o TMDB começa com `import "server-only";`.
 - Lógica pura em `src/lib/` com testes em `tests/`. Telas em `src/components/` e `src/app/`.
 
+## Qualidade (medida em 2026-11-23, site publicado, Lighthouse 12)
+
+| Aparelho | Desempenho | Acessibilidade | Boas práticas | SEO | LCP |
+|---|---|---|---|---|---|
+| Celular | 91–98 | 100 | 100 | 100 | 2,3 s |
+| Computador | 100 | 100 | 100 | 100 | 0,7 s |
+
+O desempenho no celular varia de uma rodada para outra; meça mais de uma vez.
+O robô "Qualidade" (GitHub Actions) roda lint, testes, build e testes de ponta a ponta a cada push e pull request.
+
 ## Comandos
 
 - `npm run dev`: liga o site em http://localhost:3000
 - `npm test`: roda os testes
 - `npm run lint`: procura problemas no código
+- `npm run test:e2e`: testes de ponta a ponta (ver o robô: `npx.cmd playwright test --headed --workers=1`)
+- No PowerShell deste Windows, scripts são bloqueados: use `npm.cmd` / `npx.cmd`.
