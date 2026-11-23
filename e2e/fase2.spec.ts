@@ -116,3 +116,9 @@ test("lista de gêneros cabe na tela de um celular estreito", async ({ page }) =
     expect(caixa!.x + caixa!.width).toBeLessThanOrEqual(360);
   }
 });
+
+test("caixa de busca mostra o mesmo texto limpo do título", async ({ page }) => {
+  await page.goto(`/busca?q=${encodeURIComponent("  duna    parte  ")}`);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText('Resultados para "duna parte"');
+  await expect(page.getByRole("searchbox", { name: "Buscar filme" })).toHaveValue("duna parte");
+});

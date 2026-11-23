@@ -1,6 +1,7 @@
 "use client"; // lê o endereço no navegador para mostrar o texto buscado
 
 import { usePathname, useSearchParams } from "next/navigation";
+import { normalizarBusca } from "@/lib/busca";
 import styles from "./CaixaBusca.module.css";
 
 /**
@@ -29,6 +30,7 @@ export function CampoBusca({ valorInicial = "" }: { valorInicial?: string }) {
 export function CaixaBusca() {
   const caminho = usePathname();
   const params = useSearchParams();
-  const valor = caminho === "/busca" ? (params.get("q") ?? "") : "";
+  // Mesmo texto limpo que aparece no título da página de resultados
+  const valor = caminho === "/busca" ? (normalizarBusca(params.get("q")) ?? "") : "";
   return <CampoBusca valorInicial={valor} />;
 }
