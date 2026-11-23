@@ -8,10 +8,16 @@ type Props = {
   filme: FilmeResumo;
   /** Quando um serviço está filtrado, o cartão mostra o selo dele. */
   servico?: Servico;
+  /**
+   * Para as capas que aparecem logo no topo da tela: carrega já ("eager"),
+   * em vez de esperar o visitante rolar ("lazy", o padrão). "alta" também
+   * pede ao navegador para buscar essa imagem antes das outras.
+   */
+  prioridade?: "normal" | "imediata" | "alta";
 };
 
 /** O cartão de um filme na grade: capa, nota, título e ano. Clicar abre a página do filme. */
-export function CartaoFilme({ filme, servico }: Props) {
+export function CartaoFilme({ filme, servico, prioridade = "normal" }: Props) {
   return (
     <Link href={`/filme/${filme.id}`} className={styles.cartao} data-testid="cartao-filme">
       <div className={styles.capa}>
@@ -21,6 +27,8 @@ export function CartaoFilme({ filme, servico }: Props) {
             alt={`Capa de ${filme.titulo}`}
             fill
             sizes="(max-width: 600px) 45vw, 180px"
+            loading={prioridade === "normal" ? "lazy" : "eager"}
+            fetchPriority={prioridade === "alta" ? "high" : undefined}
           />
         ) : (
           <span className={styles.semCapa}>{filme.titulo}</span>

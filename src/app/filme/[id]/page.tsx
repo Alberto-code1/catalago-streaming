@@ -80,7 +80,7 @@ async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params"
   return (
     <article>
       <section className={styles.topo}>
-        {filme.fundo && <Image src={filme.fundo} alt="" fill priority sizes="100vw" className={styles.fundo} />}
+        {filme.fundo && <Image src={filme.fundo} alt="" fill loading="eager" sizes="100vw" className={styles.fundo} />}
         <div className={styles.degrade} />
 
         <div className={styles.conteudo}>
@@ -91,7 +91,7 @@ async function DetalhesFilme({ params }: Pick<PageProps<"/filme/[id]">, "params"
           <div className={styles.linha}>
             <div className={styles.capa}>
               {filme.capa ? (
-                <Image src={filme.capa} alt={`Capa de ${filme.titulo}`} fill priority sizes="210px" />
+                <Image src={filme.capa} alt={`Capa de ${filme.titulo}`} fill loading="eager" fetchPriority="high" sizes="210px" />
               ) : (
                 <span className={styles.semCapa}>{filme.titulo}</span>
               )}

@@ -48,7 +48,8 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
   return (
     <>
       <FiltroServicos ativo={servico?.slug} />
-      <GradeFilmes filmes={filmes} servico={servico} />
+      {/* As 6 primeiras capas aparecem sem rolar a tela: carregam já */}
+      <GradeFilmes filmes={filmes} servico={servico} capasImediatas={6} />
       {/* key: ao trocar de filtro, o botão recomeça do zero */}
       <CarregarMais
         key={servico?.slug ?? "todos"}
