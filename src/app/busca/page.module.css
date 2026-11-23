@@ -1,0 +1,19 @@
+.titulo {
+  padding: 24px 0 6px;
+  font-size: 20px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.titulo small {
+  display: block;
+  color: var(--texto-3);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.aviso {
+  padding: 28px 0;
+  text-align: center;
+  color: var(--texto-2);
+}

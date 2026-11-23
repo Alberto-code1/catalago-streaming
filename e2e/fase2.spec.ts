@@ -35,3 +35,24 @@ test("carregar mais respeita o gênero", async ({ page }) => {
   expect((await pedido).url()).toContain("genero=35");
   await expect.poll(() => cartoes.count()).toBeGreaterThan(antes);
 });
+
+test("buscar pelo topo abre os resultados", async ({ page }) => {
+  await page.goto("/");
+  const caixa = page.getByRole("searchbox", { name: "Buscar filme" });
+  await caixa.fill("duna");
+  await caixa.press("Enter");
+  await expect(page).toHaveURL(/\/busca\?q=duna/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText('Resultados para "duna"');
+  await expect(page.getByTestId("cartao-filme").first()).toBeVisible();
+  await expect(page.getByRole("searchbox", { name: "Buscar filme" })).toHaveValue("duna");
+});
+
+test("busca curta pede 2 letras", async ({ page }) => {
+  await page.goto("/busca?q=a");
+  await expect(page.getByText("Digite pelo menos 2 letras para buscar.")).toBeVisible();
+});
+
+test("busca sem resultado", async ({ page }) => {
+  await page.goto("/busca?q=zzzxqwv");
+  await expect(page.getByText('Nenhum filme encontrado para "zzzxqwv".')).toBeVisible();
+});

@@ -5,7 +5,7 @@ import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
 import { extrairAno, urlImagem } from "./formatar";
-import type { DetalheFilme, Genero, PaginaFilmes, TmdbProvedoresBR, TmdbVideo } from "./tipos";
+import type { DetalheFilme, Genero, PaginaFilmes, ResultadoBusca, TmdbProvedoresBR, TmdbVideo } from "./tipos";
 
 const BASE = "https://api.themoviedb.org/3";
 
@@ -60,6 +60,35 @@ export async function buscarFilmes(
       ano: extrairAno(f.release_date),
       nota: f.vote_average,
       capa: urlImagem(f.poster_path, "w342"),
+    })),
+  };
+}
+
+type TmdbBusca = {
+  total_results: number;
+  results: { id: number; title: string; release_date?: string; vote_average: number; poster_path: string | null }[];
+};
+
+/** Busca filmes pelo nome (em todos os filmes do TMDB, disponíveis ou não). Até 20 resultados. */
+export async function buscarResultados(texto: string): Promise<ResultadoBusca> {
+  "use cache";
+  cacheLife("hours");
+
+  const dados = await tmdbFetch<TmdbBusca>("/search/movie", {
+    query: texto,
+    language: "pt-BR",
+    include_adult: "false",
+    page: 1,
+  });
+  return {
+    temMais: dados.total_results > 20,
+    filmes: dados.results.slice(0, 20).map((f) => ({
+      id: f.id,
+      titulo: f.title,
+      ano: extrairAno(f.release_date),
+      nota: f.vote_average,
+      capa: urlImagem(f.poster_path, "w342"),
+      servicos: null, // os selos de disponibilidade chegam na próxima etapa
     })),
   };
 }
