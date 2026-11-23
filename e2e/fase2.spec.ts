@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 test("escolher um gênero mantém o serviço", async ({ page }) => {
@@ -55,4 +56,23 @@ test("busca curta pede 2 letras", async ({ page }) => {
 test("busca sem resultado", async ({ page }) => {
   await page.goto("/busca?q=zzzxqwv");
   await expect(page.getByText('Nenhum filme encontrado para "zzzxqwv".')).toBeVisible();
+});
+
+test("resultados têm selo de disponibilidade", async ({ page }) => {
+  await page.goto("/busca?q=duna");
+  await expect(page.getByTestId("selo").first()).toHaveText(/^(✓ .+|Indisponível)$/);
+});
+
+test("busca com acentos e símbolos", async ({ page }) => {
+  await page.goto(`/busca?q=${encodeURIComponent("ação & aventura")}`);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText('Resultados para "ação & aventura"');
+  await expect(page.getByText("Não foi possível carregar os filmes agora.")).toHaveCount(0);
+});
+
+test("busca sem problemas graves de acessibilidade", async ({ page }) => {
+  await page.goto("/busca?q=duna");
+  await expect(page.getByTestId("selo").first()).toBeVisible();
+  const { violations } = await new AxeBuilder({ page }).analyze();
+  const graves = violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+  expect(graves.map((v) => v.id)).toEqual([]);
 });

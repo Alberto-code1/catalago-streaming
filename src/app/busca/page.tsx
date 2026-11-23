@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { EsqueletoGrade } from "@/components/Esqueleto";
-import { GradeFilmes } from "@/components/GradeFilmes";
+import { GradeBusca } from "@/components/GradeBusca";
 import { normalizarBusca } from "@/lib/busca";
 import { buscarResultados } from "@/lib/tmdb";
 import styles from "./page.module.css";
@@ -55,7 +55,7 @@ async function Resultados({ searchParams }: Pick<PageProps<"/busca">, "searchPar
         <p className={styles.aviso}>Nenhum filme encontrado para &quot;{texto}&quot;.</p>
       ) : (
         <>
-          <GradeFilmes filmes={filmes} capasImediatas={6} />
+          <GradeBusca filmes={filmes} />
           {temMais && <p className={styles.aviso}>Mostrando os 20 mais relevantes. Tente um nome mais específico.</p>}
         </>
       )}

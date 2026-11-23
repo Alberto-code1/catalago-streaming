@@ -1,6 +1,7 @@
 import "server-only"; // garante que este arquivo (e o token) nunca vá para o navegador
 
 import { cacheLife } from "next/cache";
+import { montarResultados } from "./busca";
 import { LIMITE_PAGINAS, montarParametrosDiscover } from "./discover";
 import { TmdbErro } from "./erros";
 import { escolherTrailer, extrairOndeAssistir } from "./filme";
@@ -80,17 +81,29 @@ export async function buscarResultados(texto: string): Promise<ResultadoBusca> {
     include_adult: "false",
     page: 1,
   });
-  return {
-    temMais: dados.total_results > 20,
-    filmes: dados.results.slice(0, 20).map((f) => ({
-      id: f.id,
-      titulo: f.title,
-      ano: extrairAno(f.release_date),
-      nota: f.vote_average,
-      capa: urlImagem(f.poster_path, "w342"),
-      servicos: null, // os selos de disponibilidade chegam na próxima etapa
-    })),
-  };
+  const filmes = dados.results.slice(0, 20).map((f) => ({
+    id: f.id,
+    titulo: f.title,
+    ano: extrairAno(f.release_date),
+    nota: f.vote_average,
+    capa: urlImagem(f.poster_path, "w342"),
+  }));
+
+  // Pergunta "onde está?" para TODOS os filmes ao mesmo tempo (em paralelo).
+  // "allSettled" espera todos terminarem, mesmo se algum falhar: o que falhou fica sem selo.
+  const respostas = await Promise.allSettled(filmes.map((f) => buscarIdsDisponiveis(f.id)));
+  const ids = respostas.map((r) => (r.status === "fulfilled" ? r.value : null));
+
+  return montarResultados(filmes, ids, dados.total_results);
+}
+
+/** Os códigos dos serviços onde o filme está no Brasil (assinatura, grátis ou com anúncios). */
+export async function buscarIdsDisponiveis(id: number): Promise<number[]> {
+  "use cache";
+  cacheLife("hours");
+
+  const dados = await tmdbFetch<{ results: { BR?: TmdbProvedoresBR } }>(`/movie/${id}/watch/providers`);
+  return extrairOndeAssistir(dados.results.BR).map((p) => p.id);
 }
 
 /** A lista de gêneros de filmes do TMDB, em português e em ordem alfabética. Muda raramente: cache de dias. */
