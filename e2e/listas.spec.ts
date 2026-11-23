@@ -135,3 +135,42 @@ test("abrir um filme aparece em vistos recentemente", async ({ page }) => {
   // O último aberto aparece primeiro
   await expect(itens.first().locator("a")).toHaveAttribute("href", "/filme/1726");
 });
+
+test("busca aparece em buscas recentes", async ({ page }) => {
+  await entrarComoTeste(page);
+  const registrou = page.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/busca"));
+  await page.goto("/busca?q=duna");
+  await registrou;
+
+  await page.goto("/");
+  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
+  const recentes = page.getByRole("region", { name: "Buscas recentes" });
+  await expect(recentes.getByRole("link", { name: "duna" })).toBeVisible();
+
+  // Esc fecha a lista e mantém o foco no campo
+  await page.keyboard.press("Escape");
+  await expect(recentes).toHaveCount(0);
+  await expect(page.getByRole("searchbox", { name: "Buscar filme" })).toBeFocused();
+});
+
+test("apagar todas limpa a lista de buscas recentes", async ({ page }) => {
+  await entrarComoTeste(page);
+  const registrou = page.waitForResponse((r) => r.request().method() === "POST" && r.url().includes("/busca"));
+  await page.goto("/busca?q=matrix");
+  await registrou;
+
+  await page.goto("/");
+  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
+  await page.getByRole("button", { name: "Apagar todas" }).click();
+  await expect(page.getByRole("region", { name: "Buscas recentes" })).toHaveCount(0);
+
+  await page.reload();
+  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
+  await expect(page.getByRole("region", { name: "Buscas recentes" })).toHaveCount(0);
+});
+
+test("visitante não vê buscas recentes", async ({ page }) => {
+  await page.goto("/busca?q=duna");
+  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
+  await expect(page.getByRole("region", { name: "Buscas recentes" })).toHaveCount(0);
+});

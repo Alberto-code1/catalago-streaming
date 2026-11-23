@@ -1,5 +1,7 @@
 // Regras pequenas (sem banco) das listas e do histórico.
 
+import { normalizarBusca } from "./busca";
+
 /** Os limites combinados no design da Fase 3. */
 export const LIMITES = { quero: 500, assistidos: 2000, vistos: 20, buscas: 5, porPagina: 24 } as const;
 
@@ -31,4 +33,12 @@ export type Aba = "quero" | "assistidos" | "recentes";
 /** Lê a aba do endereço (?aba=...); qualquer valor estranho vira "quero". */
 export function lerAba(valor: unknown): Aba {
   return valor === "assistidos" || valor === "recentes" ? valor : "quero";
+}
+
+/**
+ * A "chave" de uma busca recente: o texto limpo (como na página de busca) e em minúsculas.
+ * "Duna" e "  duna " são a mesma busca e não se repetem na lista.
+ */
+export function chaveBusca(texto: string): string {
+  return (normalizarBusca(texto) ?? texto.trim()).toLowerCase();
 }

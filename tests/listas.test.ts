@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LIMITES, lerAba, lerIdFilme, lerNota } from "@/lib/listas";
+import { chaveBusca, LIMITES, lerAba, lerIdFilme, lerNota } from "@/lib/listas";
 
 describe("lerIdFilme", () => {
   it("aceita ids de filme válidos (número ou texto)", () => {
@@ -40,5 +40,12 @@ describe("lerNota", () => {
     for (const valor of ["amei", 1, undefined, "GOSTEI"]) {
       expect(lerNota(valor)).toBeUndefined();
     }
+  });
+});
+
+describe("chaveBusca", () => {
+  it("limpa espaços e ignora maiúsculas, para a mesma busca não repetir", () => {
+    expect(chaveBusca("  Duna   Parte 2 ")).toBe("duna parte 2");
+    expect(chaveBusca("DUNA")).toBe(chaveBusca("duna"));
   });
 });

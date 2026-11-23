@@ -4,8 +4,9 @@
 // o login: quem é a pessoa vem da sessão, nunca de um valor enviado pelo navegador.
 
 import { refresh } from "next/cache";
-import { registrarVisita } from "@/lib/dados/historico";
+import { apagarBusca, listarBuscas, registrarBusca, registrarVisita } from "@/lib/dados/historico";
 import { darNota, marcarAssistido, marcarQuero, removerDe } from "@/lib/dados/listas";
+import { normalizarBusca } from "@/lib/busca";
 import { lerAba, lerIdFilme, lerNota, type Nota } from "@/lib/listas";
 import { obterUsuario } from "@/lib/sessao";
 
@@ -63,5 +64,36 @@ export async function registrarVisitaAcao(filmeId: number): Promise<void> {
     await registrarVisita(usuario.id, id);
   } catch (erro) {
     console.error("Falha ao registrar visita:", erro);
+  }
+}
+
+/**
+ * Guarda a busca e devolve a lista atualizada (para a caixa de busca mostrar na hora).
+ * Não faz nada sem login, com o histórico desligado ou com texto inválido (devolve null).
+ */
+export async function registrarBuscaAcao(texto: string): Promise<string[] | null> {
+  const limpo = normalizarBusca(texto);
+  const usuario = await obterUsuario();
+  if (!limpo || !usuario?.historico) return null;
+  try {
+    await registrarBusca(usuario.id, limpo);
+    return await listarBuscas(usuario.id);
+  } catch (erro) {
+    console.error("Falha ao registrar busca:", erro);
+    return null;
+  }
+}
+
+/** Apaga uma busca recente (pelo texto) ou todas (null). Devolve a lista atualizada. */
+export async function apagarBuscaAcao(texto: string | null): Promise<string[] | null> {
+  if (texto !== null && typeof texto !== "string") return null;
+  const usuario = await obterUsuario();
+  if (!usuario) return null;
+  try {
+    await apagarBusca(usuario.id, texto);
+    return await listarBuscas(usuario.id);
+  } catch (erro) {
+    console.error("Falha ao apagar busca:", erro);
+    return null;
   }
 }
