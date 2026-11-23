@@ -4,6 +4,15 @@ import { entrarComoTeste } from "./apoio/login";
 // "A Origem" (Inception): um filme conhecido que o TMDB sempre tem
 const FILME = 27205;
 
+/** Abre a página do filme logado e espera o registro em "Vistos recentemente" terminar. */
+async function abrirFilme(page: Page, filme = FILME) {
+  const registrou = page.waitForResponse(
+    (r) => r.request().method() === "POST" && r.url().startsWith(`http://localhost:3000/filme/${filme}`),
+  );
+  await page.goto(`/filme/${filme}`);
+  await registrou;
+}
+
 /** Clica num botão de lista (nome exato) e espera o nosso servidor confirmar a gravação. */
 async function clicarEEsperar(page: Page, nome: string, filme = FILME) {
   const gravou = page.waitForResponse(
@@ -23,7 +32,7 @@ test("sem login, o botão leva para entrar e volta ao filme", async ({ page }) =
 
 test("marcar quero assistir aparece na Minha conta", async ({ page }) => {
   await entrarComoTeste(page);
-  await page.goto(`/filme/${FILME}`);
+  await abrirFilme(page);
   await clicarEEsperar(page, "+ Quero assistir");
   await expect(page.getByRole("button", { name: "✓ Na sua lista" })).toHaveAttribute("aria-pressed", "true");
 
@@ -34,7 +43,7 @@ test("marcar quero assistir aparece na Minha conta", async ({ page }) => {
 
 test("remover da Minha conta tira da lista", async ({ page }) => {
   await entrarComoTeste(page);
-  await page.goto(`/filme/${FILME}`);
+  await abrirFilme(page);
   await clicarEEsperar(page, "+ Quero assistir");
 
   await page.goto("/minha-conta");
@@ -44,7 +53,7 @@ test("remover da Minha conta tira da lista", async ({ page }) => {
 
 test("cliques rápidos não duplicam", async ({ page }) => {
   await entrarComoTeste(page);
-  await page.goto(`/filme/${FILME}`);
+  await abrirFilme(page);
   const botao = page.getByRole("button", { name: /Quero assistir|Na sua lista/ });
   // Conta as gravações que chegam ao nosso servidor, para esperar as 3 terminarem
   let gravacoes = 0;
@@ -71,7 +80,7 @@ test("Minha conta sem login manda para entrar", async ({ page }) => {
 
 test("já assisti tira o filme da lista quero assistir", async ({ page }) => {
   await entrarComoTeste(page);
-  await page.goto(`/filme/${FILME}`);
+  await abrirFilme(page);
   await clicarEEsperar(page, "+ Quero assistir");
   await clicarEEsperar(page, "Já assisti");
   await expect(page.getByRole("button", { name: "✓ Assistido" })).toHaveAttribute("aria-pressed", "true");
@@ -90,7 +99,7 @@ test("filme assistido mostra ✓ visto no catálogo", async ({ page }) => {
   const href = await primeiro.getAttribute("href");
   const id = Number(href?.match(/\/filme\/(\d+)/)?.[1]);
 
-  await page.goto(`/filme/${id}`);
+  await abrirFilme(page, id);
   await clicarEEsperar(page, "Já assisti", id);
 
   await page.goto("/");
@@ -99,7 +108,7 @@ test("filme assistido mostra ✓ visto no catálogo", async ({ page }) => {
 
 test("nota gostei aparece na Minha conta", async ({ page }) => {
   await entrarComoTeste(page);
-  await page.goto(`/filme/${FILME}`);
+  await abrirFilme(page);
   await clicarEEsperar(page, "Já assisti");
   await clicarEEsperar(page, "Gostei");
   await expect(page.getByRole("button", { name: "Gostei", exact: true })).toHaveAttribute("aria-pressed", "true");
