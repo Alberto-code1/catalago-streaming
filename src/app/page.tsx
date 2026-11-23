@@ -12,7 +12,7 @@ export default function Home({ searchParams }: PageProps<"/">) {
   return (
     <>
       <h1 className={styles.titulo}>
-        Populares agora <small>disponíveis no Brasil, inclusos na assinatura ou grátis</small>
+        Populares agora <small>disponíveis agora no Brasil, inclusos na assinatura ou grátis</small>
       </h1>
       {/* O filtro depende do endereço (?servico=...), então carrega dentro do Suspense */}
       <Suspense
