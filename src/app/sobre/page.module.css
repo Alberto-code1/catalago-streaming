@@ -40,3 +40,14 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+.sobre ul {
+  margin: 0 0 12px;
+  padding-left: 22px;
+  color: #d0d3dc;
+  line-height: 1.7;
+}
+
+.sobre li {
+  margin-bottom: 4px;
+}

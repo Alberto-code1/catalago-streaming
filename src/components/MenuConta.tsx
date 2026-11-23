@@ -27,14 +27,14 @@ export function MenuConta({ nome, foto }: Props) {
 
   return (
     <MenuFechavel className={styles.menu}>
-      <summary className={styles.botao} aria-label={`Conta de ${nome}`}>
+      {/* O nome lido pelo leitor de tela inclui o que aparece na tela (as iniciais, quando não há foto) */}
+      <summary className={styles.botao} data-testid="menu-conta">
         {foto ? (
           <Image src={foto} alt="" width={32} height={32} className={styles.foto} />
         ) : (
-          <span className={styles.iniciais} aria-hidden="true">
-            {iniciais(nome)}
-          </span>
+          <span className={styles.iniciais}>{iniciais(nome)}</span>
         )}
+        <span className="sr-only">{foto ? `Conta de ${nome}` : `, conta de ${nome}`}</span>
       </summary>
       <div className={styles.lista}>
         <p className={styles.nome}>{nome}</p>

@@ -17,11 +17,12 @@ describe("urlDoSite", () => {
 });
 
 describe("sitemap", () => {
-  test("lista a página inicial, a Sobre e uma página por serviço", () => {
+  test("lista a página inicial, a Sobre, a Privacidade e uma página por serviço", () => {
     const urls = sitemap().map((e) => e.url);
     expect(urls).toContain(urlDoSite());
     expect(urls).toContain(`${urlDoSite()}/sobre`);
     expect(urls).toContain(`${urlDoSite()}/?servico=netflix`);
-    expect(urls).toHaveLength(7);
+    expect(urls).toContain(`${urlDoSite()}/privacidade`);
+    expect(urls).toHaveLength(8);
   });
 });

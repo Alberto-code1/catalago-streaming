@@ -4,7 +4,7 @@ import { entrarComoTeste } from "./apoio/login";
 test("entrar e sair", async ({ page }) => {
   await entrarComoTeste(page);
   await page.goto("/");
-  const conta = page.getByLabel(/^Conta de /);
+  const conta = page.getByTestId("menu-conta");
   await expect(conta).toBeVisible();
 
   await conta.click();

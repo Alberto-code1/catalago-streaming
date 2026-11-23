@@ -4,7 +4,9 @@ import { Suspense } from "react";
 import { EsqueletoGrade } from "@/components/Esqueleto";
 import { type FilmeDaLista, ItemLista, resumoDaLista } from "@/components/ItemLista";
 import { Paginacao } from "@/components/Paginacao";
+import { PrivacidadeDados } from "@/components/PrivacidadeDados";
 import grade from "@/components/GradeFilmes.module.css";
+import { historicoLigado } from "@/lib/dados/conta";
 import { listarVistos } from "@/lib/dados/historico";
 import { listarAssistidos, listarQuero } from "@/lib/dados/listas";
 import { lerPagina } from "@/lib/discover";
@@ -66,6 +68,9 @@ async function Conteudo({ searchParams }: Pick<PageProps<"/minha-conta">, "searc
       </nav>
 
       <Lista usuario={usuario} aba={aba} pagina={pagina} />
+
+      {/* A preferência vem direto do banco (o resumo do login no cookie pode estar alguns minutos atrasado) */}
+      <PrivacidadeDados historico={await historicoLigado(usuario.id).catch(() => usuario.historico)} />
     </>
   );
 }

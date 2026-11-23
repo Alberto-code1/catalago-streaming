@@ -42,3 +42,41 @@ export function lerAba(valor: unknown): Aba {
 export function chaveBusca(texto: string): string {
   return (normalizarBusca(texto) ?? texto.trim()).toLowerCase();
 }
+
+/** O arquivo "Baixar meus dados" (LGPD): tudo o que o site guarda sobre a pessoa. */
+export type ExportacaoDados = {
+  geradoEm: string;
+  conta: { nome: string; email: string; criadaEm: string };
+  historicoLigado: boolean;
+  queroAssistir: { filmeId: number; desde: string }[];
+  assistidos: { filmeId: number; nota: Nota; desde: string }[];
+  vistosRecentemente: { filmeId: number; em: string }[];
+  buscasRecentes: { texto: string; em: string }[];
+};
+
+/** As linhas do banco que entram no arquivo. */
+type LinhasDaPessoa = {
+  agora: Date;
+  conta: { name: string; email: string; createdAt: Date; historicoLigado: boolean };
+  quero: { filmeId: number; criadoEm: Date }[];
+  assistidos: { filmeId: number; nota: string | null; criadoEm: Date }[];
+  vistos: { filmeId: number; vistoEm: Date }[];
+  buscas: { texto: string; buscadoEm: Date }[];
+};
+
+/** Monta o arquivo de dados da pessoa, com as datas em texto (formato ISO). Nada de sessão ou senha entra. */
+export function montarExportacao(l: LinhasDaPessoa): ExportacaoDados {
+  return {
+    geradoEm: l.agora.toISOString(),
+    conta: { nome: l.conta.name, email: l.conta.email, criadaEm: l.conta.createdAt.toISOString() },
+    historicoLigado: l.conta.historicoLigado,
+    queroAssistir: l.quero.map((q) => ({ filmeId: q.filmeId, desde: q.criadoEm.toISOString() })),
+    assistidos: l.assistidos.map((a) => ({
+      filmeId: a.filmeId,
+      nota: lerNota(a.nota) ?? null,
+      desde: a.criadoEm.toISOString(),
+    })),
+    vistosRecentemente: l.vistos.map((v) => ({ filmeId: v.filmeId, em: v.vistoEm.toISOString() })),
+    buscasRecentes: l.buscas.map((b) => ({ texto: b.texto, em: b.buscadoEm.toISOString() })),
+  };
+}
