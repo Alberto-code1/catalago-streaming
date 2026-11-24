@@ -14,7 +14,7 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 
 - **Fase 1 (concluída):** catálogo, filtro por serviço, carregar mais, página do filme, acabamento profissional.
 - **Fase 2 (concluída):** filtro por gênero (`?genero=<id do TMDB>`, combina com o serviço) e busca por nome (`/busca?q=`), com selo "✓ serviços" ou "Indisponível" (só os 5 serviços do site contam). Design: [docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md](docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md)
-- **Fase 3 (no ramo `fase-3-contas`, falta publicar):** login só com Google (Better Auth), banco Postgres na Neon (Drizzle), "Quero assistir", "Já assisti" com 👍/👎 e "✓ visto" nos cartões, vistos recentemente, buscas recentes, Minha conta e LGPD (/privacidade, histórico desligável, baixar dados, excluir conta). Design: [docs/superpowers/specs/2026-11-23-fase3-contas-design.md](docs/superpowers/specs/2026-11-23-fase3-contas-design.md) · Plano: [docs/superpowers/plans/2026-11-23-fase3-contas.md](docs/superpowers/plans/2026-11-23-fase3-contas.md)
+- **Fase 3 (concluída, no ar em 2026-11-24):** login só com Google (Better Auth), banco Postgres na Neon (Drizzle), "Quero assistir", "Já assisti" com 👍/👎 e "✓ visto" nos cartões, vistos recentemente, buscas recentes, Minha conta e LGPD (/privacidade, histórico desligável, baixar dados, excluir conta). Design: [docs/superpowers/specs/2026-11-23-fase3-contas-design.md](docs/superpowers/specs/2026-11-23-fase3-contas-design.md) · Plano: [docs/superpowers/plans/2026-11-23-fase3-contas.md](docs/superpowers/plans/2026-11-23-fase3-contas.md)
 - Fluxo desde a Fase 2: trabalhar num ramo, abrir Pull Request (prévia da Vercel + robô "Qualidade") e só então juntar na `main`.
 
 ## Como trabalhar com o dono
@@ -32,14 +32,14 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 - Banco: Neon `main` = site oficial; ramo `dev` = computador do dono; prévias ganham um ramo próprio. Mudou o `src/db/schema.ts`? `npm run db:gerar` e commitar a migração (o build aplica).
 - Lógica pura em `src/lib/` com testes em `tests/`. Telas em `src/components/` e `src/app/`.
 
-## Qualidade (medida em 2026-11-23, site publicado, Lighthouse 12)
+## Qualidade (medida em 2026-11-24, site publicado, Lighthouse 12, depois da Fase 3)
 
 | Aparelho | Desempenho | Acessibilidade | Boas práticas | SEO | LCP |
 |---|---|---|---|---|---|
-| Celular | 91–98 | 100 | 100 | 100 | 2,3 s |
-| Computador | 100 | 100 | 100 | 100 | 0,7 s |
+| Celular | 84–93 | 100 | 100 | 100 | 2,2–3,5 s |
+| Computador | 98 | 100 | 100 | 100 | 1,0 s |
 
-O desempenho no celular varia de uma rodada para outra; meça mais de uma vez.
+O desempenho no celular varia de uma rodada para outra; meça mais de uma vez. Na Fase 2 era 91–98: a queda vem sobretudo da marquinha "✓ visto" (um componente de navegador por cartão). Otimização possível e adiada pelo dono: uma só peça na página pinta todos os "✓ visto".
 O robô "Qualidade" (GitHub Actions) roda lint, testes, build e testes de ponta a ponta a cada push e pull request.
 
 ## Comandos
