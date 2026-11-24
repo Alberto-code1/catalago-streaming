@@ -47,7 +47,7 @@ export function CartaoFilme({ filme, servico, genero, prioridade = "normal", sel
           ✓ visto
         </span>
         {servico && (
-          <span className={styles.selo} style={{ background: servico.cor }}>
+          <span className={styles.selo}>
             {servico.nome}
           </span>
         )}

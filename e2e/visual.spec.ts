@@ -1,3 +1,4 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 /** A cor de destaque que o CSS está usando agora na página. */
@@ -64,3 +65,20 @@ test("com movimento reduzido, a parede fica parada", async ({ page }) => {
     .evaluate((el) => getComputedStyle(el).animationName);
   expect(animacao).toBe("none");
 });
+
+test("no celular, a página inicial não rola para o lado", async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 760 });
+  await page.goto("/?servico=max");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveAccessibleName("O que assistir na HBO Max");
+  const sobra = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(sobra).toBeLessThanOrEqual(0);
+});
+
+for (const servico of ["", "netflix", "prime", "disney", "max", "globoplay"]) {
+  test(`página inicial ${servico || "todos"} sem problemas sérios de acessibilidade`, async ({ page }) => {
+    await page.goto(servico ? `/?servico=${servico}` : "/");
+    await expect(page.getByTestId("cartao-filme").first()).toBeVisible();
+    const r = await new AxeBuilder({ page }).analyze();
+    expect(r.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([]);
+  });
+}

@@ -16,7 +16,7 @@ export default function ImagemDeCompartilhamento() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0b0d12",
+          background: "#17131f",
           color: "#e8eaf0",
         }}
       >
@@ -26,7 +26,7 @@ export default function ImagemDeCompartilhamento() {
             width: 120,
             height: 120,
             borderRadius: 26,
-            background: "#f5c518",
+            background: "#ffb547",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -34,12 +34,12 @@ export default function ImagemDeCompartilhamento() {
           }}
         >
           <svg width="64" height="64" viewBox="0 0 64 64">
-            <path d="M18 8 L56 32 L18 56 Z" fill="#0b0d12" />
+            <path d="M18 8 L56 32 L18 56 Z" fill="#17131f" />
           </svg>
         </div>
         <div style={{ display: "flex", fontSize: 84, fontWeight: 800, letterSpacing: -2 }}>
           <span>Catálogo</span>
-          <span style={{ color: "#f5c518" }}>Streaming</span>
+          <span style={{ color: "#ffb547" }}>Streaming</span>
         </div>
         <div style={{ fontSize: 36, color: "#9aa1b2", marginTop: 18 }}>Filmes nos streamings do Brasil</div>
       </div>

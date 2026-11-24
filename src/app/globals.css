@@ -78,6 +78,15 @@ a {
   text-decoration: none;
 }
 
+/* Títulos das páginas na fonte de letreiro de cinema */
+h1 {
+  font-family: var(--fonte-titulo);
+  font-variation-settings: "opsz" 72;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1;
+}
+
 img {
   display: block;
   max-width: 100%;
