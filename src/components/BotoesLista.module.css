@@ -1,0 +1,58 @@
+.area {
+  margin-top: 20px;
+}
+
+.botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--superficie-2);
+  color: var(--texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.botao:hover {
+  border-color: var(--destaque);
+}
+
+.ativo {
+  border-color: var(--destaque);
+  background: var(--destaque);
+  color: #000;
+}
+
+.nota {
+  padding: 9px 12px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.aviso {
+  margin: 8px 0 0;
+  min-height: 1.2em;
+  font-size: 13px;
+  color: #ffb4b4;
+}
+
+.aviso:empty {
+  margin: 0;
+  min-height: 0;
+}
+
+.dica {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--texto-2);
+}

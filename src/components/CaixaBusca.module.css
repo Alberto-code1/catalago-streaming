@@ -1,7 +1,13 @@
-.form {
+/* A caixa (campo + lista de buscas recentes) */
+.area {
+  position: relative;
   flex: 1;
   max-width: 340px;
   margin-left: auto;
+}
+
+.form {
+  width: 100%;
 }
 
 .campo {
@@ -23,4 +29,89 @@
   outline: 2px solid var(--destaque);
   outline-offset: 2px;
   border-color: var(--destaque);
+}
+
+/* Lista de buscas recentes, logo abaixo do campo */
+.recentes {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  padding: 8px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+
+.tituloRecentes {
+  margin: 2px 8px 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--texto-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.recentes ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.recentes li {
+  display: flex;
+  align-items: center;
+}
+
+.recentes li a {
+  flex: 1;
+  padding: 7px 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recentes li a:hover {
+  background: var(--borda);
+}
+
+.recentes li button {
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--texto-2);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.recentes li button:hover {
+  background: var(--borda);
+  color: #ff8a8a;
+}
+
+.apagarTodas {
+  margin: 6px 8px 2px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--texto-2);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* No celular, a caixa vai para a linha de baixo do topo, ocupando a largura toda */
+@media (max-width: 560px) {
+  .area {
+    order: 3;
+    flex-basis: 100%;
+    max-width: none;
+  }
 }

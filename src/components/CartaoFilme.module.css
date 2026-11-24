@@ -96,3 +96,16 @@
   background: rgba(255, 255, 255, 0.06);
   color: #a3aabb;
 }
+
+/* Marquinha "✓ visto" nos filmes que a pessoa já assistiu */
+.visto {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.75);
+  color: #7ee2a8;
+  font-size: 12px;
+  font-weight: 700;
+}

@@ -4,6 +4,7 @@ import { formatarNota } from "@/lib/formatar";
 import { hrefFilme } from "@/lib/links";
 import type { FilmeResumo, Servico } from "@/lib/tipos";
 import styles from "./CartaoFilme.module.css";
+import { MarcaVisto } from "./MarcaVisto";
 
 type Props = {
   filme: FilmeResumo;
@@ -42,6 +43,8 @@ export function CartaoFilme({ filme, servico, genero, prioridade = "normal", sel
           <span aria-hidden="true">⭐ {formatarNota(filme.nota)}</span>
           <span className="sr-only">Nota {formatarNota(filme.nota)} de 10</span>
         </span>
+        {/* "✓ visto": só aparece para quem está logado e já assistiu (preenchido no navegador) */}
+        <MarcaVisto filmeId={filme.id} />
         {servico && (
           <span className={styles.selo} style={{ background: servico.cor }}>
             {servico.nome}

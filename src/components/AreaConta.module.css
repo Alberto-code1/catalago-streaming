@@ -1,0 +1,99 @@
+/* Espaço reservado enquanto a conta carrega: evita que o topo "pule" */
+.vaga {
+  display: inline-block;
+  width: 72px;
+  height: 32px;
+}
+
+.entrar {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 1px solid var(--destaque);
+  border-radius: 999px;
+  color: var(--destaque);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.entrar:hover {
+  background: var(--destaque);
+  color: #000;
+}
+
+.menu {
+  position: relative;
+}
+
+.botao {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  border-radius: 50%;
+}
+
+.botao::-webkit-details-marker {
+  display: none;
+}
+
+.foto,
+.iniciais {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.iniciais {
+  display: grid;
+  place-items: center;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--texto);
+}
+
+.lista {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  background: var(--superficie-2);
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.4);
+}
+
+.nome {
+  margin: 4px 10px 8px;
+  font-size: 13px;
+  color: var(--texto-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lista a,
+.lista button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--texto);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lista a:hover,
+.lista button:hover {
+  background: var(--borda);
+  color: var(--destaque);
+}

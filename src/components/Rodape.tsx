@@ -13,7 +13,7 @@ export function Rodape() {
       <a href="https://www.justwatch.com" target="_blank" rel="noopener noreferrer">
         JustWatch
       </a>{" "}
-      · <Link href="/sobre">Sobre o site</Link>
+      · <Link href="/sobre">Sobre o site</Link> · <Link href="/privacidade">Privacidade</Link>
     </footer>
   );
 }

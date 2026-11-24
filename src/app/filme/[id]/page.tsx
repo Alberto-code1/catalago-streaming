@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { AreaPessoalFilme } from "@/components/AreaPessoalFilme";
 import { Elenco } from "@/components/Elenco";
 import { EsqueletoFilme } from "@/components/Esqueleto";
 import { Trailer } from "@/components/Trailer";
@@ -133,6 +134,11 @@ async function DetalhesFilme({ params, searchParams }: Pick<PageProps<"/filme/[i
               ) : (
                 <p className={styles.vazio}>Sem streaming no Brasil no momento.</p>
               )}
+
+              {/* Botões de lista: dependem de quem visita, então carregam depois do resto */}
+              <Suspense fallback={null}>
+                <AreaPessoalFilme filmeId={filme.id} />
+              </Suspense>
             </div>
           </div>
         </div>

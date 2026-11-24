@@ -1,0 +1,66 @@
+.pagina {
+  padding: 32px 0 16px;
+}
+
+.pagina h1 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.ola {
+  margin: 0 0 20px;
+  color: var(--texto-2);
+}
+
+.abas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.abas a {
+  padding: 8px 16px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--superficie);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.abas a:hover {
+  border-color: var(--destaque);
+}
+
+.abas a[aria-current="page"] {
+  border-color: var(--destaque);
+  background: var(--destaque);
+  color: #000;
+}
+
+.total {
+  margin: 0;
+  font-size: 13px;
+  color: var(--texto-3);
+}
+
+.vazio {
+  margin: 32px 0;
+  color: var(--texto-2);
+}
+
+.paginacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16px 0;
+  font-size: 14px;
+  color: var(--texto-2);
+}
+
+.paginacao a {
+  color: var(--destaque);
+  font-weight: 600;
+}
