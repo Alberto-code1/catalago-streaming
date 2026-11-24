@@ -8,7 +8,6 @@
   align-content: center;
   transform: rotate(-7deg);
   opacity: 0.62;
-  perspective: 900px;
 }
 
 .fileira {
@@ -34,7 +33,6 @@
   object-fit: cover;
   border-radius: 8px;
   background: var(--superficie-2);
-  backface-visibility: hidden;
 }
 
 /* Metade do caminho = a fileira repetida chega onde a primeira começou: o laço não tem emenda */
@@ -44,8 +42,15 @@
   }
 }
 
-/* A cascata: cada capa gira de lado e volta, uma depois da outra */
+/* A cascata: cada capa gira de lado e volta, uma depois da outra.
+   A perspectiva 3D só liga durante a troca: deixá-la ligada o tempo todo transforma
+   cada capa numa camada separada e deixa o carregamento bem mais pesado no celular. */
+.virando {
+  perspective: 900px;
+}
+
 .virando .fileira img {
+  backface-visibility: hidden;
   animation: vira 0.8s cubic-bezier(0.45, 0, 0.2, 1) both;
   animation-delay: calc(var(--ordem) * 45ms);
 }

@@ -24,15 +24,15 @@
     linear-gradient(0deg, var(--fundo) 4%, transparent 45%);
 }
 
-/* Tinge a parede com a cor do streaming escolhido */
+/* Tinge a parede com a cor do streaming escolhido (camada translúcida comum: misturar
+   cores com mix-blend-mode sobre a parede em movimento custava caro no celular) */
 .heroi::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   background: var(--destaque);
-  mix-blend-mode: color;
-  opacity: 0.36;
+  opacity: 0.16;
   transition: background-color var(--troca);
 }
 
