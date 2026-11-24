@@ -14,7 +14,7 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 
 - **Fase 1 (concluída):** catálogo, filtro por serviço, carregar mais, página do filme, acabamento profissional.
 - **Fase 2 (concluída):** filtro por gênero (`?genero=<id do TMDB>`, combina com o serviço) e busca por nome (`/busca?q=`), com selo "✓ serviços" ou "Indisponível" (só os 5 serviços do site contam). Design: [docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md](docs/superpowers/specs/2026-11-23-fase2-busca-genero-design.md)
-- **Fase 3 (próxima):** login, banco de dados, lista "quero assistir", LGPD.
+- **Fase 3 (no ramo `fase-3-contas`, falta publicar):** login só com Google (Better Auth), banco Postgres na Neon (Drizzle), "Quero assistir", "Já assisti" com 👍/👎 e "✓ visto" nos cartões, vistos recentemente, buscas recentes, Minha conta e LGPD (/privacidade, histórico desligável, baixar dados, excluir conta). Design: [docs/superpowers/specs/2026-11-23-fase3-contas-design.md](docs/superpowers/specs/2026-11-23-fase3-contas-design.md) · Plano: [docs/superpowers/plans/2026-11-23-fase3-contas.md](docs/superpowers/plans/2026-11-23-fase3-contas.md)
 - Fluxo desde a Fase 2: trabalhar num ramo, abrir Pull Request (prévia da Vercel + robô "Qualidade") e só então juntar na `main`.
 
 ## Como trabalhar com o dono
@@ -27,6 +27,9 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 
 - O token do TMDB (`TMDB_READ_TOKEN`) fica só em `.env.local` e na Vercel. Nunca no Git, nunca em código de cliente.
 - Todo arquivo que chama o TMDB começa com `import "server-only";`.
+- Segredos do login e do banco (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `GOOGLE_CLIENT_SECRET`) seguem a mesma regra do token do TMDB. Tabela de variáveis no README.
+- Quem é a pessoa vem sempre da sessão no servidor (`obterUsuario`), nunca de um valor enviado pelo navegador. Ler a sessão sempre dentro de `<Suspense>`.
+- Banco: Neon `main` = site oficial; ramo `dev` = computador do dono; prévias ganham um ramo próprio. Mudou o `src/db/schema.ts`? `npm run db:gerar` e commitar a migração (o build aplica).
 - Lógica pura em `src/lib/` com testes em `tests/`. Telas em `src/components/` e `src/app/`.
 
 ## Qualidade (medida em 2026-11-23, site publicado, Lighthouse 12)
@@ -45,4 +48,5 @@ O robô "Qualidade" (GitHub Actions) roda lint, testes, build e testes de ponta 
 - `npm test`: roda os testes
 - `npm run lint`: procura problemas no código
 - `npm run test:e2e`: testes de ponta a ponta (ver o robô: `npx.cmd playwright test --headed --workers=1`)
+- `npm run db:migrar`: cria/atualiza as tabelas do banco do `.env.local`
 - No PowerShell deste Windows, scripts são bloqueados: use `npm.cmd` / `npx.cmd`.

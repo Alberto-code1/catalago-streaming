@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Catálogo Streaming
 
-## Getting Started
+Site que mostra os filmes disponíveis agora nos streamings do Brasil (dados do TMDB), com contas Google,
+listas "Quero assistir" e "Já assisti", histórico e controles de privacidade (LGPD).
 
-First, run the development server:
+No ar: https://catalogo-streaming-one.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Como rodar no computador
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Instale as dependências: `npm install` (no PowerShell do Windows: `npm.cmd install`).
+2. Crie o arquivo `.env.local` com as variáveis abaixo.
+3. Crie as tabelas no banco: `npm run db:migrar`.
+4. Ligue o site: `npm run dev` e abra http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de ambiente (`.env.local` e Vercel — nunca no Git)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variável | Para quê | Onde na Vercel |
+|---|---|---|
+| `TMDB_READ_TOKEN` | dados dos filmes | Production e Preview |
+| `DATABASE_URL` | banco Postgres (Neon) | criada pela integração da Neon |
+| `BETTER_AUTH_SECRET` | assina os cookies de login (32+ caracteres aleatórios) | Production e Preview, **mesmo valor** |
+| `BETTER_AUTH_URL` | endereço do site (`http://localhost:3000` no computador) | só Production |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | login com Google (Google Cloud Console) | Production e Preview |
+| `LOGIN_DE_TESTE=1` | "pessoa de teste" para o robô Playwright | **nunca** na Vercel |
 
-## Learn More
+No computador, use um ramo próprio do banco na Neon (ex.: `dev`), para não misturar com os dados reais.
 
-To learn more about Next.js, take a look at the following resources:
+## Comandos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` — liga o site em http://localhost:3000
+- `npm test` — testes unitários (Vitest)
+- `npm run lint` — procura problemas no código
+- `npm run test:e2e` — testes de ponta a ponta (Playwright)
+- `npm run db:gerar` — gera uma migração depois de mudar `src/db/schema.ts`
+- `npm run db:migrar` — aplica as migrações (o `npm run build` também aplica)
