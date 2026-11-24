@@ -32,6 +32,9 @@ export const auth = betterAuth({
   },
   // Login com e-mail e senha: só para o robô de testes, nunca ligado na Vercel
   emailAndPassword: { enabled: loginDeTesteLigado(process.env) },
+  // O robô cria dezenas de "pessoas de teste" em segundos; a proteção contra excesso de pedidos
+  // bloquearia isso. Ela só é desligada com o login de teste (nunca na Vercel).
+  ...(loginDeTesteLigado(process.env) && { rateLimit: { enabled: false } }),
   session: {
     // Sem "resumo da sessão no cookie": toda visita logada confere o login no banco.
     // Assim "Sair" e "Excluir minha conta" valem na hora em todos os aparelhos.
