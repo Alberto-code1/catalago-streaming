@@ -57,6 +57,8 @@ body:has([data-tema="globoplay"]) {
 
 html {
   color-scheme: dark;
+  /* O topo de largura total não pode criar rolagem para o lado */
+  overflow-x: clip;
 }
 
 body {

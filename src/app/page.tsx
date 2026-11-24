@@ -5,6 +5,7 @@ import { FiltroGenero } from "@/components/FiltroGenero";
 import { FiltroServicos } from "@/components/FiltroServicos";
 import { MarcaTema } from "@/components/MarcaTema";
 import { GradeFilmes } from "@/components/GradeFilmes";
+import { Heroi } from "@/components/Heroi";
 import { lerGenero } from "@/lib/generos";
 import { servicoPorSlug } from "@/lib/servicos";
 import { temaDoServico } from "@/lib/temas";
@@ -16,9 +17,8 @@ import styles from "./page.module.css";
 export default function Home({ searchParams }: PageProps<"/">) {
   return (
     <>
-      <h1 className={styles.titulo}>
-        Populares agora <small>disponíveis agora no Brasil, inclusos na assinatura ou grátis</small>
-      </h1>
+      <Heroi searchParams={searchParams} />
+      <h2 className={styles.titulo}>Populares agora</h2>
       {/* O filtro depende do endereço (?servico=...), então carrega dentro do Suspense */}
       <Suspense
         fallback={

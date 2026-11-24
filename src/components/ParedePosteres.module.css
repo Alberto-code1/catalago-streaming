@@ -1,0 +1,68 @@
+/* A parede fica atrás do título, inclinada, maior que o topo (as bordas somem para fora) */
+.parede {
+  position: absolute;
+  inset: -16% -12%;
+  z-index: -2;
+  display: grid;
+  gap: 14px;
+  align-content: center;
+  transform: rotate(-7deg);
+  opacity: 0.62;
+  perspective: 900px;
+}
+
+.fileira {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: anda 90s linear infinite;
+}
+
+.fileira:nth-child(2) {
+  animation-direction: reverse;
+  animation-duration: 110s;
+}
+
+.fileira:nth-child(3) {
+  animation-duration: 130s;
+}
+
+.fileira img {
+  width: clamp(92px, 10.5vw, 150px);
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--superficie-2);
+  backface-visibility: hidden;
+}
+
+/* Metade do caminho = a fileira repetida chega onde a primeira começou: o laço não tem emenda */
+@keyframes anda {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* A cascata: cada capa gira de lado e volta, uma depois da outra */
+.virando .fileira img {
+  animation: vira 0.8s cubic-bezier(0.45, 0, 0.2, 1) both;
+  animation-delay: calc(var(--ordem) * 45ms);
+}
+
+@keyframes vira {
+  50% {
+    transform: rotateY(90deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .parede {
+    inset: -10% -40% -10% -10%;
+    gap: 10px;
+  }
+
+  .fileira {
+    gap: 10px;
+  }
+}
