@@ -34,3 +34,25 @@ export async function comPadraoSeFalhar<T>(fn: () => Promise<T>, padrao: T): Pro
 export function loginDeTesteLigado(env: Record<string, string | undefined>): boolean {
   return env.LOGIN_DE_TESTE === "1" && !env.VERCEL;
 }
+
+/** O endereço oficial do site: o Google só devolve a pessoa para endereços cadastrados. */
+export const PRODUCAO = "https://catalogo-streaming-one.vercel.app";
+
+/**
+ * O "proxy" do login liga em toda a Vercel: na prévia ele manda o Google devolver a pessoa
+ * ao site oficial, e no site oficial ele a repassa de volta à prévia. No computador, desligado.
+ */
+export function proxyOAuthLigado(env: Record<string, string | undefined>): boolean {
+  return !!env.VERCEL;
+}
+
+/** De onde o login aceita pedidos: o site oficial, a prévia atual (e o endereço do ramo) ou o computador. */
+export function origensConfiaveis(env: Record<string, string | undefined>): string[] {
+  const origens = [
+    PRODUCAO,
+    env.VERCEL_URL && `https://${env.VERCEL_URL}`,
+    env.VERCEL_BRANCH_URL && `https://${env.VERCEL_BRANCH_URL}`,
+    env.BETTER_AUTH_URL,
+  ];
+  return [...new Set(origens.filter((o): o is string => !!o))];
+}

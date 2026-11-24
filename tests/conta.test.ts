@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { comPadraoSeFalhar, lerVolta, loginDeTesteLigado } from "@/lib/conta";
+import { comPadraoSeFalhar, lerVolta, loginDeTesteLigado, origensConfiaveis, proxyOAuthLigado } from "@/lib/conta";
 
 describe("lerVolta", () => {
   it("aceita caminhos do próprio site", () => {
@@ -44,5 +44,28 @@ describe("loginDeTesteLigado", () => {
     expect(loginDeTesteLigado({ LOGIN_DE_TESTE: "1" })).toBe(true);
     expect(loginDeTesteLigado({ LOGIN_DE_TESTE: "1", VERCEL: "1" })).toBe(false);
     expect(loginDeTesteLigado({})).toBe(false);
+  });
+});
+
+describe("proxyOAuthLigado", () => {
+  it("liga na Vercel (prévias e site oficial), nunca no computador", () => {
+    expect(proxyOAuthLigado({ VERCEL: "1", VERCEL_ENV: "preview" })).toBe(true);
+    expect(proxyOAuthLigado({ VERCEL: "1", VERCEL_ENV: "production" })).toBe(true);
+    expect(proxyOAuthLigado({})).toBe(false);
+  });
+});
+
+describe("origensConfiaveis", () => {
+  it("inclui o site oficial, a prévia atual e o endereço do ramo", () => {
+    expect(
+      origensConfiaveis({ VERCEL_URL: "x-abc.vercel.app", VERCEL_BRANCH_URL: "x-git-ramo.vercel.app" }),
+    ).toEqual(["https://catalogo-streaming-one.vercel.app", "https://x-abc.vercel.app", "https://x-git-ramo.vercel.app"]);
+  });
+
+  it("no computador, inclui o BETTER_AUTH_URL", () => {
+    expect(origensConfiaveis({ BETTER_AUTH_URL: "http://localhost:3000" })).toEqual([
+      "https://catalogo-streaming-one.vercel.app",
+      "http://localhost:3000",
+    ]);
   });
 });

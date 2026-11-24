@@ -5,10 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { oAuthProxy } from "better-auth/plugins";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
-import { loginDeTesteLigado } from "./conta";
-
-/** O endereço oficial do site: o Google só devolve a pessoa para endereços cadastrados. */
-const PRODUCAO = "https://catalogo-streaming-one.vercel.app";
+import { loginDeTesteLigado, origensConfiaveis, PRODUCAO, proxyOAuthLigado } from "./conta";
 
 // Nas prévias da Vercel, cada endereço é diferente. A Vercel informa o endereço da prévia atual.
 const previa = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
@@ -42,9 +39,10 @@ export const auth = betterAuth({
     cookieCache: { enabled: false },
   },
   // Só aceita pedidos de login vindos do próprio site (oficial, prévia atual ou computador)
-  trustedOrigins: [PRODUCAO, previa, process.env.BETTER_AUTH_URL].filter((o): o is string => !!o),
-  // O "proxy" do login só vale nas prévias: no computador e no site oficial, o Google devolve direto
-  plugins: [...(ehPrevia ? [oAuthProxy({ productionURL: PRODUCAO })] : []), nextCookies()],
+  trustedOrigins: origensConfiaveis(process.env),
+  // O "proxy" do login roda na prévia e no site oficial (que repassa a pessoa de volta à prévia).
+  // No computador fica desligado: o Google devolve direto para o localhost.
+  plugins: [...(proxyOAuthLigado(process.env) ? [oAuthProxy({ productionURL: PRODUCAO })] : []), nextCookies()],
   // Não manda dados de uso da biblioteca para ninguém
   telemetry: { enabled: false },
 });
