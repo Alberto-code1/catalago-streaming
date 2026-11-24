@@ -13,6 +13,20 @@ async function abrirFilme(page: Page, filme = FILME) {
   await registrou;
 }
 
+/**
+ * Clica na caixa de busca até a lista de buscas recentes abrir. Em máquinas lentas,
+ * o primeiro clique pode cair na caixa provisória, que é trocada logo depois.
+ */
+async function abrirBuscasRecentes(page: Page) {
+  const caixa = page.getByRole("searchbox", { name: "Buscar filme" });
+  const recentes = page.getByRole("region", { name: "Buscas recentes" });
+  await expect(async () => {
+    await caixa.click();
+    await expect(recentes).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 20_000 });
+  return recentes;
+}
+
 /** Clica num botão de lista (nome exato) e espera o nosso servidor confirmar a gravação. */
 async function clicarEEsperar(page: Page, nome: string, filme = FILME) {
   const gravou = page.waitForResponse(
@@ -143,8 +157,7 @@ test("busca aparece em buscas recentes", async ({ page }) => {
   await registrou;
 
   await page.goto("/");
-  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
-  const recentes = page.getByRole("region", { name: "Buscas recentes" });
+  const recentes = await abrirBuscasRecentes(page);
   await expect(recentes.getByRole("link", { name: "duna" })).toBeVisible();
 
   // Esc fecha a lista e mantém o foco no campo
@@ -160,7 +173,7 @@ test("apagar todas limpa a lista de buscas recentes", async ({ page }) => {
   await registrou;
 
   await page.goto("/");
-  await page.getByRole("searchbox", { name: "Buscar filme" }).focus();
+  await abrirBuscasRecentes(page);
   await page.getByRole("button", { name: "Apagar todas" }).click();
   await expect(page.getByRole("region", { name: "Buscas recentes" })).toHaveCount(0);
 
