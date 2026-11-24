@@ -10,14 +10,14 @@
   padding: 6px 14px;
   border: 1px solid var(--destaque);
   border-radius: 999px;
-  color: var(--destaque);
+  color: var(--destaque-texto);
   font-size: 14px;
   font-weight: 700;
 }
 
 .entrar:hover {
   background: var(--destaque);
-  color: #000;
+  color: var(--sobre-destaque);
 }
 
 .menu {
@@ -95,5 +95,5 @@
 .lista a:hover,
 .lista button:hover {
   background: var(--borda);
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }

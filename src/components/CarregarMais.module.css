@@ -14,7 +14,7 @@
 }
 
 .botao:hover:not(:disabled) {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
 }
 
 .botao:disabled {

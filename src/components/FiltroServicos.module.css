@@ -18,13 +18,13 @@
 }
 
 .pilula:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
 .ativa,
 .ativa:hover {
   background: var(--destaque);
-  border-color: var(--destaque);
-  color: #111;
+  border-color: var(--destaque-texto);
+  color: var(--sobre-destaque);
 }

@@ -28,7 +28,7 @@
 .campo:focus-visible {
   outline: 2px solid var(--destaque);
   outline-offset: 2px;
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
 }
 
 /* Lista de buscas recentes, logo abaixo do campo */

@@ -19,7 +19,7 @@
 }
 
 .destaque {
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }
 
 .menu {
@@ -29,7 +29,7 @@
 }
 
 .menu a:hover {
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }
 
 /* No celular: logo em cima, busca ocupando a largura embaixo */

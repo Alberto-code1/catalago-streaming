@@ -30,7 +30,7 @@
 }
 
 .voltar:hover {
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }
 
 .linha {
@@ -94,7 +94,7 @@
 
 .nota {
   background: var(--destaque);
-  color: #111;
+  color: var(--sobre-destaque);
   font-weight: 800;
   border-radius: 6px;
   padding: 2px 9px;

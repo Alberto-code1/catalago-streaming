@@ -3,9 +3,11 @@ import { CarregarMais } from "@/components/CarregarMais";
 import { EsqueletoFiltro, EsqueletoGrade } from "@/components/Esqueleto";
 import { FiltroGenero } from "@/components/FiltroGenero";
 import { FiltroServicos } from "@/components/FiltroServicos";
+import { MarcaTema } from "@/components/MarcaTema";
 import { GradeFilmes } from "@/components/GradeFilmes";
 import { lerGenero } from "@/lib/generos";
 import { servicoPorSlug } from "@/lib/servicos";
+import { temaDoServico } from "@/lib/temas";
 import { buscarFilmes, buscarGeneros } from "@/lib/tmdb";
 import type { Genero } from "@/lib/tipos";
 import styles from "./page.module.css";
@@ -44,9 +46,13 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
 
   // Serviços + botão de gênero (o botão só aparece se a lista de gêneros carregou)
   const filtros = (
+    <>
+    {/* Pinta o site com a cor do serviço escolhido */}
+    <MarcaTema tema={temaDoServico(servico?.slug)} />
     <FiltroServicos ativo={servico?.slug} genero={genero?.id}>
       {generos && <FiltroGenero generos={generos} ativo={genero?.id} servico={servico?.slug} />}
     </FiltroServicos>
+    </>
   );
 
   if (filmes.length === 0) {

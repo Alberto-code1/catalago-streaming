@@ -22,7 +22,7 @@
 }
 
 .sobre a {
-  color: var(--destaque);
+  color: var(--destaque-texto);
   text-decoration: underline;
   text-underline-offset: 2px;
 }

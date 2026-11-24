@@ -24,13 +24,13 @@
 }
 
 .botao:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
 }
 
 .ativo {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   background: var(--destaque);
-  color: #000;
+  color: var(--sobre-destaque);
 }
 
 .nota {

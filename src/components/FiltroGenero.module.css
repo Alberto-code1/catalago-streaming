@@ -23,7 +23,7 @@
 }
 
 .botao:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
@@ -34,7 +34,7 @@
 
 /* Gênero escolhido: contorno amarelo (o amarelo cheio é do serviço) */
 .ativo {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
@@ -70,7 +70,7 @@
 .selecionada,
 .selecionada:hover {
   background: var(--destaque);
-  color: #111;
+  color: var(--sobre-destaque);
   font-weight: 700;
 }
 
