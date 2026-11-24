@@ -1,0 +1,107 @@
+/* O topo ocupa a largura toda da janela, mesmo dentro do <main> centralizado */
+.heroi {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  margin-inline: calc(50% - 50vw);
+  height: min(64vh, 620px);
+  min-height: 440px;
+}
+
+/* Escurece a parede do lado do título e embaixo, para o texto ler bem */
+.heroi::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(
+      90deg,
+      var(--fundo) 12%,
+      color-mix(in oklab, var(--fundo) 68%, transparent) 52%,
+      color-mix(in oklab, var(--fundo) 18%, transparent)
+    ),
+    linear-gradient(0deg, var(--fundo) 4%, transparent 45%);
+}
+
+/* Tinge a parede com a cor do streaming escolhido */
+.heroi::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--destaque);
+  mix-blend-mode: color;
+  opacity: 0.36;
+  transition: background-color var(--troca);
+}
+
+.chamada {
+  position: absolute;
+  left: max(16px, calc(50vw - var(--largura) / 2 + 16px));
+  right: 16px;
+  bottom: clamp(28px, 6vh, 64px);
+  max-width: 900px;
+}
+
+.titulo {
+  font-family: var(--fonte-titulo);
+  font-variation-settings: "opsz" 72;
+  font-weight: 900;
+  font-size: clamp(50px, min(10.5vw, 13vh), 160px);
+  line-height: 0.86;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+}
+
+/* 2ª linha: só o contorno das letras */
+.letreiro {
+  display: block;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 2px var(--texto);
+  perspective: 600px;
+}
+
+.letra {
+  display: inline-block;
+  transform-origin: 50% 55%;
+}
+
+/* As letras viram uma a uma quando a frase muda (painel de aeroporto) */
+.vira {
+  animation: placa 0.5s cubic-bezier(0.5, 0, 0.3, 1) both;
+  animation-delay: calc(var(--k) * 40ms);
+}
+
+@keyframes placa {
+  50% {
+    transform: rotateX(-90deg);
+  }
+}
+
+.sub {
+  margin-top: 16px;
+  max-width: 46ch;
+  font-size: clamp(16px, 1.5vw, 19px);
+  color: var(--texto-2);
+}
+
+@media (max-width: 640px) {
+  .heroi {
+    height: auto;
+    min-height: 380px;
+  }
+
+  .chamada {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 150px 16px 28px;
+  }
+
+  .letreiro {
+    -webkit-text-stroke-width: 1.5px;
+  }
+}

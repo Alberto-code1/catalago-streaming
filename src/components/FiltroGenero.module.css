@@ -11,7 +11,7 @@
   font-size: 13px;
   font-weight: 600;
   background: var(--superficie-2);
-  border: 1px solid #2a3042;
+  border: 1px solid var(--borda);
   color: #c4c9d6;
   user-select: none;
   transition: border-color 0.15s, color 0.15s;
@@ -23,7 +23,7 @@
 }
 
 .botao:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
@@ -34,7 +34,7 @@
 
 /* Gênero escolhido: contorno amarelo (o amarelo cheio é do serviço) */
 .ativo {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
@@ -49,7 +49,7 @@
   overflow-y: auto;
   padding: 6px;
   background: var(--superficie-2);
-  border: 1px solid #2a3042;
+  border: 1px solid var(--borda);
   border-radius: 12px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
 }
@@ -70,7 +70,7 @@
 .selecionada,
 .selecionada:hover {
   background: var(--destaque);
-  color: #111;
+  color: var(--sobre-destaque);
   font-weight: 700;
 }
 

@@ -1,15 +1,52 @@
-/* Cores do site (as mesmas da prévia aprovada) */
+/*
+ * Cores do site. Cada streaming tem a sua paleta: quando a página mostra um serviço
+ * (um elemento com data-tema="netflix", por exemplo), o site inteiro troca de tom.
+ * Todo par texto/fundo foi escolhido com contraste suficiente (WCAG AA).
+ *  --destaque        cor de preenchimento (botões, pílula ativa, bordas)
+ *  --sobre-destaque  texto escrito em cima do --destaque
+ *  --destaque-texto  o destaque usado como cor de texto sobre o fundo escuro
+ */
 :root {
-  --fundo: #0b0d12;
-  --superficie: #12151d;
-  --superficie-2: #1a1e29;
-  --borda: #232838;
-  --destaque: #f5c518;
-  --texto: #e8eaf0;
-  --texto-2: #9aa1b2;
-  --texto-3: #7c8499;
+  --fundo: #17131f;
+  --superficie: #1d1827;
+  --superficie-2: #251f31;
+  --borda: #342c42;
+  --destaque: #ffb547;
+  --sobre-destaque: #1a1208;
+  --destaque-texto: #ffb547;
+  --texto: #f4eee6;
+  --texto-2: #bdb3c9;
+  --texto-3: #998fa8;
   --raio: 10px;
   --largura: 1180px;
+  --troca: 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  --fonte-titulo: var(--font-titulo), "Arial Narrow", sans-serif;
+}
+
+body:has([data-tema="netflix"]) {
+  --fundo: #1a0a0b; --superficie: #221012; --superficie-2: #2d1416; --borda: #4a2226;
+  --destaque: #e50914; --sobre-destaque: #ffffff; --destaque-texto: #ff5c64;
+  --texto-2: #d6b4b6; --texto-3: #b08f92;
+}
+body:has([data-tema="prime"]) {
+  --fundo: #06131d; --superficie: #0a1b28; --superficie-2: #0f2536; --borda: #1d3a50;
+  --destaque: #1fb4ec; --sobre-destaque: #04121b; --destaque-texto: #3fc2f2;
+  --texto-2: #a9c5d6; --texto-3: #85a3b5;
+}
+body:has([data-tema="disney"]) {
+  --fundo: #0a1029; --superficie: #0f1735; --superficie-2: #152046; --borda: #26336a;
+  --destaque: #5b86ff; --sobre-destaque: #050c24; --destaque-texto: #86a6ff;
+  --texto-2: #adb8de; --texto-3: #8b96bf;
+}
+body:has([data-tema="max"]) {
+  --fundo: #110a22; --superficie: #170f2d; --superficie-2: #20153c; --borda: #36275e;
+  --destaque: #a774ff; --sobre-destaque: #12082a; --destaque-texto: #b994ff;
+  --texto-2: #c3b5e0; --texto-3: #a092c0;
+}
+body:has([data-tema="globoplay"]) {
+  --fundo: #1b0c07; --superficie: #23110a; --superficie-2: #2e170e; --borda: #4c2a1b;
+  --destaque: #ff5a1f; --sobre-destaque: #1b0c07; --destaque-texto: #ff7a49;
+  --texto-2: #dcbcae; --texto-3: #b6978a;
 }
 
 * {
@@ -20,12 +57,15 @@
 
 html {
   color-scheme: dark;
+  /* O topo de largura total não pode criar rolagem para o lado */
+  overflow-x: clip;
 }
 
 body {
   background: var(--fundo);
   color: var(--texto);
-  font-family: var(--font-geist-sans), "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-texto), "Segoe UI", system-ui, sans-serif;
+  transition: background-color var(--troca), color var(--troca);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
@@ -36,6 +76,15 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Títulos das páginas na fonte de letreiro de cinema */
+h1 {
+  font-family: var(--fonte-titulo);
+  font-variation-settings: "opsz" 72;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 1;
 }
 
 img {
@@ -82,7 +131,7 @@ iframe:focus-visible {
   top: -60px;
   z-index: 10;
   background: var(--destaque);
-  color: #111;
+  color: var(--sobre-destaque);
   font-weight: 700;
   padding: 10px 16px;
   border-radius: 8px;
@@ -95,4 +144,14 @@ iframe:focus-visible {
 /* O <main> recebe foco pelo link "Pular", mas não precisa de contorno */
 main:focus {
   outline: none;
+}
+
+/* Quem pediu ao aparelho para reduzir movimento recebe tudo parado */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

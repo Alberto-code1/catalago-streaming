@@ -30,7 +30,7 @@
 }
 
 .voltar:hover {
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }
 
 .linha {
@@ -46,7 +46,7 @@
   flex-shrink: 0;
   border-radius: var(--raio);
   overflow: hidden;
-  background: linear-gradient(160deg, #2a3042, #12151d);
+  background: linear-gradient(160deg, var(--superficie-2), var(--superficie));
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 }
 
@@ -70,9 +70,9 @@
 }
 
 .info h1 {
-  font-size: 32px;
+  font-size: 54px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.005em;
   line-height: 1.15;
 }
 
@@ -94,7 +94,7 @@
 
 .nota {
   background: var(--destaque);
-  color: #111;
+  color: var(--sobre-destaque);
   font-weight: 800;
   border-radius: 6px;
   padding: 2px 9px;
@@ -161,6 +161,6 @@
   }
 
   .info h1 {
-    font-size: 26px;
+    font-size: 36px;
   }
 }

@@ -3,9 +3,12 @@ import { CarregarMais } from "@/components/CarregarMais";
 import { EsqueletoFiltro, EsqueletoGrade } from "@/components/Esqueleto";
 import { FiltroGenero } from "@/components/FiltroGenero";
 import { FiltroServicos } from "@/components/FiltroServicos";
+import { MarcaTema } from "@/components/MarcaTema";
 import { GradeFilmes } from "@/components/GradeFilmes";
+import { Heroi } from "@/components/Heroi";
 import { lerGenero } from "@/lib/generos";
 import { servicoPorSlug } from "@/lib/servicos";
+import { temaDoServico } from "@/lib/temas";
 import { buscarFilmes, buscarGeneros } from "@/lib/tmdb";
 import type { Genero } from "@/lib/tipos";
 import styles from "./page.module.css";
@@ -14,9 +17,8 @@ import styles from "./page.module.css";
 export default function Home({ searchParams }: PageProps<"/">) {
   return (
     <>
-      <h1 className={styles.titulo}>
-        Populares agora <small>disponíveis agora no Brasil, inclusos na assinatura ou grátis</small>
-      </h1>
+      <Heroi searchParams={searchParams} />
+      <h2 className={styles.titulo}>Populares agora</h2>
       {/* O filtro depende do endereço (?servico=...), então carrega dentro do Suspense */}
       <Suspense
         fallback={
@@ -44,9 +46,13 @@ async function Catalogo({ searchParams }: Pick<PageProps<"/">, "searchParams">) 
 
   // Serviços + botão de gênero (o botão só aparece se a lista de gêneros carregou)
   const filtros = (
+    <>
+    {/* Pinta o site com a cor do serviço escolhido */}
+    <MarcaTema tema={temaDoServico(servico?.slug)} />
     <FiltroServicos ativo={servico?.slug} genero={genero?.id}>
       {generos && <FiltroGenero generos={generos} ativo={genero?.id} servico={servico?.slug} />}
     </FiltroServicos>
+    </>
   );
 
   if (filmes.length === 0) {

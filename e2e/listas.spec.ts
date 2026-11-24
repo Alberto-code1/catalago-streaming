@@ -109,7 +109,9 @@ test("filme assistido mostra ✓ visto no catálogo", async ({ page }) => {
   await entrarComoTeste(page);
   await page.goto("/");
   const primeiro = page.getByTestId("cartao-filme").first();
-  await expect(primeiro.getByTestId("marca-visto")).toHaveCount(0);
+  // Todo cartão já traz a marquinha, escondida; ela só aparece para os filmes assistidos
+  await expect(primeiro.getByTestId("marca-visto")).toHaveCount(1);
+  await expect(primeiro.getByTestId("marca-visto")).toBeHidden();
   const href = await primeiro.getAttribute("href");
   const id = Number(href?.match(/\/filme\/(\d+)/)?.[1]);
 

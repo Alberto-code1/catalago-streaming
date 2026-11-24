@@ -13,5 +13,5 @@
 }
 
 .rodape a:hover {
-  color: var(--destaque);
+  color: var(--destaque-texto);
 }

@@ -4,9 +4,9 @@
 
 .pagina h1 {
   margin: 0 0 4px;
-  font-size: 30px;
+  font-size: 46px;
   font-weight: 800;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.005em;
 }
 
 .ola {
@@ -31,13 +31,13 @@
 }
 
 .abas a:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
 }
 
 .abas a[aria-current="page"] {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   background: var(--destaque);
-  color: #000;
+  color: var(--sobre-destaque);
 }
 
 .total {
@@ -61,6 +61,6 @@
 }
 
 .paginacao a {
-  color: var(--destaque);
+  color: var(--destaque-texto);
   font-weight: 600;
 }

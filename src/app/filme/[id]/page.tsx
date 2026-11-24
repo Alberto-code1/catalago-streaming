@@ -5,11 +5,13 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { AreaPessoalFilme } from "@/components/AreaPessoalFilme";
 import { Elenco } from "@/components/Elenco";
+import { MarcaTema } from "@/components/MarcaTema";
 import { EsqueletoFilme } from "@/components/Esqueleto";
 import { Trailer } from "@/components/Trailer";
 import { formatarDuracao, formatarNota, resumir } from "@/lib/formatar";
 import { lerIdGenero } from "@/lib/generos";
 import { hrefCatalogo } from "@/lib/links";
+import { temaDoServico } from "@/lib/temas";
 import { buscarDetalhes, buscarFilmes } from "@/lib/tmdb";
 import styles from "./page.module.css";
 
@@ -165,7 +167,14 @@ async function DetalhesFilme({ params, searchParams }: Pick<PageProps<"/filme/[i
 async function VoltarComFiltro({ searchParams }: Pick<PageProps<"/filme/[id]">, "searchParams">) {
   const { servico, genero } = await searchParams;
   // O gênero só é conferido como número aqui (sem consultar o TMDB); a página inicial valida de verdade
-  return <LinkVoltar href={hrefCatalogo(typeof servico === "string" ? servico : undefined, lerIdGenero(genero))} />;
+  const slug = typeof servico === "string" ? servico : undefined;
+  return (
+    <>
+      {/* Quem veio de um serviço continua vendo a cor dele */}
+      <MarcaTema tema={temaDoServico(slug)} />
+      <LinkVoltar href={hrefCatalogo(slug, lerIdGenero(genero))} />
+    </>
+  );
 }
 
 function LinkVoltar({ href }: { href: string }) {

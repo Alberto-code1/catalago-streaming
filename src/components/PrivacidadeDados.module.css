@@ -86,7 +86,7 @@
 }
 
 .botao:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
 }
 
 .perigo {

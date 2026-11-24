@@ -7,24 +7,27 @@
 }
 
 .pilula {
-  padding: 7px 16px;
+  padding: 9px 18px;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   background: var(--superficie-2);
-  border: 1px solid #2a3042;
-  color: #c4c9d6;
-  transition: border-color 0.15s, color 0.15s;
+  border: 1px solid var(--borda);
+  color: var(--texto-2);
+  transition:
+    background-color var(--troca),
+    border-color var(--troca),
+    color var(--troca);
 }
 
 .pilula:hover {
-  border-color: var(--destaque);
+  border-color: var(--destaque-texto);
   color: var(--texto);
 }
 
 .ativa,
 .ativa:hover {
   background: var(--destaque);
-  border-color: var(--destaque);
-  color: #111;
+  border-color: var(--destaque-texto);
+  color: var(--sobre-destaque);
 }
