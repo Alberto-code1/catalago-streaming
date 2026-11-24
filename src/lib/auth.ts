@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { oAuthProxy } from "better-auth/plugins";
 import { db } from "@/db";
 import * as schema from "@/db/schema";
-import { loginDeTesteLigado, origensConfiaveis, PRODUCAO, proxyOAuthLigado } from "./conta";
+import { lerEnv, loginDeTesteLigado, origensConfiaveis, PRODUCAO, proxyOAuthLigado } from "./conta";
 
 // Nas prévias da Vercel, cada endereço é diferente. A Vercel informa o endereço da prévia atual.
 const previa = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
@@ -13,7 +13,8 @@ const ehPrevia = process.env.VERCEL_ENV === "preview";
 
 /** A configuração do login (biblioteca Better Auth), guardando contas e sessões no nosso banco. */
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL ?? previa,
+  baseURL: lerEnv(process.env, "BETTER_AUTH_URL") ?? previa,
+  secret: lerEnv(process.env, "BETTER_AUTH_SECRET"),
   database: drizzleAdapter(db, { provider: "pg", schema }),
   user: {
     additionalFields: {
@@ -22,8 +23,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      clientId: lerEnv(process.env, "GOOGLE_CLIENT_ID") ?? "",
+      clientSecret: lerEnv(process.env, "GOOGLE_CLIENT_SECRET") ?? "",
       // Sempre deixa a pessoa escolher a conta (útil em computadores compartilhados)
       prompt: "select_account",
       // Nas prévias, o Google devolve a pessoa para o site oficial, que a repassa à prévia (ver oAuthProxy)

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { comPadraoSeFalhar, lerVolta, loginDeTesteLigado, origensConfiaveis, proxyOAuthLigado } from "@/lib/conta";
+import { comPadraoSeFalhar, lerEnv, lerVolta, loginDeTesteLigado, origensConfiaveis, proxyOAuthLigado } from "@/lib/conta";
 
 describe("lerVolta", () => {
   it("aceita caminhos do próprio site", () => {
@@ -67,5 +67,23 @@ describe("origensConfiaveis", () => {
       "https://catalogo-streaming-one.vercel.app",
       "http://localhost:3000",
     ]);
+  });
+});
+
+describe("lerEnv", () => {
+  it("tira espaços e quebras de linha coladas sem querer no painel da Vercel", () => {
+    expect(lerEnv({ X: "https://site.app\n" }, "X")).toBe("https://site.app");
+    expect(lerEnv({ X: "  abc \r\n" }, "X")).toBe("abc");
+  });
+
+  it("valor vazio ou ausente vira undefined", () => {
+    expect(lerEnv({ X: " \n" }, "X")).toBeUndefined();
+    expect(lerEnv({}, "X")).toBeUndefined();
+  });
+});
+
+describe("origensConfiaveis com valores sujos", () => {
+  it("limpa a quebra de linha do BETTER_AUTH_URL", () => {
+    expect(origensConfiaveis({ BETTER_AUTH_URL: "http://localhost:3000\n" })).toContain("http://localhost:3000");
   });
 });
