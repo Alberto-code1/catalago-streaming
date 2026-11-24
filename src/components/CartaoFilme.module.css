@@ -1,10 +1,12 @@
 .cartao {
   display: block;
-  transition: transform 0.15s;
 }
 
-.cartao:hover {
-  transform: translateY(-4px);
+/* Ao passar o mouse (ou focar com o teclado), a capa sobe, inclina de leve e brilha na cor do tema */
+.cartao:hover .capa,
+.cartao:focus-visible .capa {
+  transform: translateY(-6px) rotate(-1deg);
+  box-shadow: 0 18px 40px -12px var(--destaque);
 }
 
 .capa {
@@ -12,8 +14,11 @@
   aspect-ratio: 2 / 3;
   border-radius: var(--raio);
   overflow: hidden;
-  background: linear-gradient(160deg, #2a3042, #12151d);
+  background: linear-gradient(160deg, var(--superficie-2), var(--superficie));
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 0.35s;
 }
 
 .capa img {
@@ -97,15 +102,16 @@
   color: #a3aabb;
 }
 
-/* Marquinha "✓ visto" nos filmes que a pessoa já assistiu */
+/* Marquinha "✓ visto": escondida até o EstiloVistos liberar */
 .visto {
+  display: none;
   position: absolute;
   left: 8px;
   bottom: 8px;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgb(0 0 0 / 0.75);
-  color: #7ee2a8;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
   font-size: 12px;
   font-weight: 700;
 }

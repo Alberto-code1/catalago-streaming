@@ -4,7 +4,6 @@ import { formatarNota } from "@/lib/formatar";
 import { hrefFilme } from "@/lib/links";
 import type { FilmeResumo, Servico } from "@/lib/tipos";
 import styles from "./CartaoFilme.module.css";
-import { MarcaVisto } from "./MarcaVisto";
 
 type Props = {
   filme: FilmeResumo;
@@ -25,7 +24,7 @@ type Props = {
 /** O cartão de um filme na grade: capa, nota, título e ano. Clicar abre a página do filme. */
 export function CartaoFilme({ filme, servico, genero, prioridade = "normal", selo }: Props) {
   return (
-    <Link href={hrefFilme(filme.id, servico?.slug, genero)} className={styles.cartao} data-testid="cartao-filme">
+    <Link href={hrefFilme(filme.id, servico?.slug, genero)} className={styles.cartao} data-testid="cartao-filme" data-filme={filme.id}>
       <div className={selo && !selo.disponivel ? `${styles.capa} ${styles.apagada}` : styles.capa}>
         {filme.capa ? (
           <Image
@@ -43,8 +42,10 @@ export function CartaoFilme({ filme, servico, genero, prioridade = "normal", sel
           <span aria-hidden="true">⭐ {formatarNota(filme.nota)}</span>
           <span className="sr-only">Nota {formatarNota(filme.nota)} de 10</span>
         </span>
-        {/* "✓ visto": só aparece para quem está logado e já assistiu (preenchido no navegador) */}
-        <MarcaVisto filmeId={filme.id} />
+        {/* "✓ visto": escondida; só aparece nos filmes assistidos (ver EstiloVistos) */}
+        <span className={styles.visto} data-visto data-testid="marca-visto">
+          ✓ visto
+        </span>
         {servico && (
           <span className={styles.selo} style={{ background: servico.cor }}>
             {servico.nome}

@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Big_Shoulders, Instrument_Sans } from "next/font/google";
+import { EstiloVistos } from "@/components/EstiloVistos";
 import { Rodape } from "@/components/Rodape";
 import { Topo } from "@/components/Topo";
 import { urlDoSite } from "@/lib/site";
@@ -40,6 +41,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Rodape />
+        {/* Mostra o "✓ visto" nos filmes assistidos (uma peça só para a página toda) */}
+        <EstiloVistos />
         {/* Estatísticas da Vercel: visitas (sem cookies) e velocidade real dos visitantes */}
         <Analytics />
         <SpeedInsights />
