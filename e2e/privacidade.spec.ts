@@ -50,6 +50,17 @@ test("baixar meus dados traz a lista", async ({ page }) => {
   expect(dados.conta.email).toBe(email);
   expect(dados.queroAssistir).toEqual([{ filmeId: FILME, desde: expect.any(String) }]);
   expect(dados.vistosRecentemente).toHaveLength(1);
+  // Os dados de login vão no arquivo, mas nunca o código secreto da sessão
+  expect(dados.logins.length).toBeGreaterThan(0);
+  expect(dados.logins[0]).toEqual({
+    inicio: expect.any(String),
+    expira: expect.any(String),
+    ip: expect.anything(),
+    navegador: expect.any(String),
+  });
+  const cookies = await page.context().cookies();
+  const token = cookies.find((c) => c.name.includes("session_token"))?.value.split(".")[0] ?? "sem-token";
+  expect(JSON.stringify(dados)).not.toContain(token);
 });
 
 test("baixar dados sem login dá 401", async ({ request }) => {
@@ -111,6 +122,8 @@ test("depois de excluir a conta, uma cópia antiga do cookie não vale mais", as
 test("sair num aparelho não deixa uma cópia antiga do cookie logada", async ({ page, context }) => {
   await entrarComoTeste(page);
   await page.goto("/");
+  // Espera a página ficar pronta para cliques (em máquinas lentas, o menu demora a "acordar")
+  await page.waitForLoadState("networkidle");
   const copia = await context.cookies();
 
   await page.getByTestId("menu-conta").click();
@@ -120,4 +133,33 @@ test("sair num aparelho não deixa uma cópia antiga do cookie logada", async ({
   await context.addCookies(copia);
   await page.goto("/minha-conta");
   await expect(page).toHaveURL(/\/entrar/);
+});
+
+test("uma pessoa não vê os dados de outra", async ({ browser }) => {
+  // Pessoa A marca um filme
+  const contextoA = await browser.newContext();
+  const a = await contextoA.newPage();
+  await entrarComoTeste(a);
+  await abrirFilmeEsperando(a);
+  const gravou = a.waitForResponse(
+    (r) => r.request().method() === "POST" && r.url().startsWith(`http://localhost:3000/filme/${FILME}`),
+  );
+  await a.getByRole("button", { name: "+ Quero assistir", exact: true }).click();
+  await gravou;
+
+  // Pessoa B, noutro navegador, não vê nada disso
+  const contextoB = await browser.newContext();
+  const b = await contextoB.newPage();
+  const { email } = await entrarComoTeste(b);
+  await b.goto("/minha-conta");
+  await expect(b.getByText("Sua lista está vazia.", { exact: false })).toBeVisible();
+  await b.goto("/minha-conta?aba=recentes");
+  await expect(b.getByTestId("item-lista")).toHaveCount(0);
+  const dadosB = await (await b.request.get("/api/eu/dados")).json();
+  expect(dadosB.conta.email).toBe(email);
+  expect(dadosB.queroAssistir).toEqual([]);
+  expect(dadosB.vistosRecentemente).toEqual([]);
+
+  await contextoA.close();
+  await contextoB.close();
 });

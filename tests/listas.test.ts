@@ -60,6 +60,8 @@ describe("montarExportacao", () => {
       assistidos: [{ filmeId: 2, nota: "gostei", criadoEm: d }],
       vistos: [{ filmeId: 3, vistoEm: d }],
       buscas: [{ texto: "duna", buscadoEm: d }],
+      sessoes: [{ createdAt: d, expiresAt: d, ipAddress: "1.2.3.4", userAgent: "Chrome" }],
+      contas: [{ providerId: "google", createdAt: d }],
     });
     expect(r).toEqual({
       geradoEm: "2026-11-23T10:00:00.000Z",
@@ -69,6 +71,8 @@ describe("montarExportacao", () => {
       assistidos: [{ filmeId: 2, nota: "gostei", desde: "2026-11-23T10:00:00.000Z" }],
       vistosRecentemente: [{ filmeId: 3, em: "2026-11-23T10:00:00.000Z" }],
       buscasRecentes: [{ texto: "duna", em: "2026-11-23T10:00:00.000Z" }],
+      logins: [{ inicio: "2026-11-23T10:00:00.000Z", expira: "2026-11-23T10:00:00.000Z", ip: "1.2.3.4", navegador: "Chrome" }],
+      contasVinculadas: [{ provedor: "google", desde: "2026-11-23T10:00:00.000Z" }],
     });
     expect(JSON.stringify(r)).not.toMatch(/token|session|senha|password/i);
   });

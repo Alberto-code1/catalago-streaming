@@ -52,6 +52,10 @@ export type ExportacaoDados = {
   assistidos: { filmeId: number; nota: Nota; desde: string }[];
   vistosRecentemente: { filmeId: number; em: string }[];
   buscasRecentes: { texto: string; em: string }[];
+  /** Os logins abertos (sem o código secreto da sessão). */
+  logins: { inicio: string; expira: string; ip: string | null; navegador: string | null }[];
+  /** As contas ligadas (por ex. Google), sem nenhum token. */
+  contasVinculadas: { provedor: string; desde: string }[];
 };
 
 /** As linhas do banco que entram no arquivo. */
@@ -62,9 +66,11 @@ type LinhasDaPessoa = {
   assistidos: { filmeId: number; nota: string | null; criadoEm: Date }[];
   vistos: { filmeId: number; vistoEm: Date }[];
   buscas: { texto: string; buscadoEm: Date }[];
+  sessoes: { createdAt: Date; expiresAt: Date; ipAddress: string | null; userAgent: string | null }[];
+  contas: { providerId: string; createdAt: Date }[];
 };
 
-/** Monta o arquivo de dados da pessoa, com as datas em texto (formato ISO). Nada de sessão ou senha entra. */
+/** Monta o arquivo de dados da pessoa, com as datas em texto (formato ISO). Nenhum token, código de sessão ou senha entra. */
 export function montarExportacao(l: LinhasDaPessoa): ExportacaoDados {
   return {
     geradoEm: l.agora.toISOString(),
@@ -78,5 +84,12 @@ export function montarExportacao(l: LinhasDaPessoa): ExportacaoDados {
     })),
     vistosRecentemente: l.vistos.map((v) => ({ filmeId: v.filmeId, em: v.vistoEm.toISOString() })),
     buscasRecentes: l.buscas.map((b) => ({ texto: b.texto, em: b.buscadoEm.toISOString() })),
+    logins: l.sessoes.map((x) => ({
+      inicio: x.createdAt.toISOString(),
+      expira: x.expiresAt.toISOString(),
+      ip: x.ipAddress,
+      navegador: x.userAgent,
+    })),
+    contasVinculadas: l.contas.map((c) => ({ provedor: c.providerId, desde: c.createdAt.toISOString() })),
   };
 }

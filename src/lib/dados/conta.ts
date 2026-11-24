@@ -1,7 +1,7 @@
 import "server-only";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { assistidos, buscasRecentes, queroAssistir, user, vistosRecentes } from "@/db/schema";
+import { account, assistidos, buscasRecentes, queroAssistir, session, user, vistosRecentes } from "@/db/schema";
 import { type ExportacaoDados, montarExportacao } from "../listas";
 
 // Os direitos da pessoa sobre os próprios dados (LGPD): ver/baixar, apagar o histórico,
@@ -35,7 +35,7 @@ export async function exportarDados(usuarioId: string): Promise<ExportacaoDados 
     .where(eq(user.id, usuarioId));
   if (!conta) return null;
 
-  const [quero, vistos, assistiu, buscas] = await Promise.all([
+  const [quero, vistos, assistiu, buscas, sessoes, contas] = await Promise.all([
     db
       .select({ filmeId: queroAssistir.filmeId, criadoEm: queroAssistir.criadoEm })
       .from(queroAssistir)
@@ -56,8 +56,23 @@ export async function exportarDados(usuarioId: string): Promise<ExportacaoDados 
       .from(buscasRecentes)
       .where(eq(buscasRecentes.usuarioId, usuarioId))
       .orderBy(desc(buscasRecentes.buscadoEm)),
+    // Só datas, IP e navegador: o código secreto da sessão (token) nunca sai do banco
+    db
+      .select({
+        createdAt: session.createdAt,
+        expiresAt: session.expiresAt,
+        ipAddress: session.ipAddress,
+        userAgent: session.userAgent,
+      })
+      .from(session)
+      .where(eq(session.userId, usuarioId))
+      .orderBy(desc(session.createdAt)),
+    db
+      .select({ providerId: account.providerId, createdAt: account.createdAt })
+      .from(account)
+      .where(eq(account.userId, usuarioId)),
   ]);
-  return montarExportacao({ agora: new Date(), conta, quero, assistidos: assistiu, vistos, buscas });
+  return montarExportacao({ agora: new Date(), conta, quero, assistidos: assistiu, vistos, buscas, sessoes, contas });
 }
 
 /** Exclui a conta. O banco apaga junto, sozinho, sessões, listas e histórico ("on delete cascade"). */
