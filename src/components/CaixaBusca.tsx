@@ -70,6 +70,8 @@ export function CampoBusca({ valorInicial = "" }: { valorInicial?: string }) {
           maxLength={100}
           className={styles.campo}
           onFocus={() => setAberto(true)}
+          // Clicar de novo (por ex. depois de fechar com Esc) também abre a lista
+          onClick={() => setAberto(true)}
           // Começou a digitar: a lista sai da frente
           onInput={() => setAberto(false)}
         />

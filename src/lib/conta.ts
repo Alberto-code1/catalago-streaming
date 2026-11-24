@@ -35,6 +35,15 @@ export function loginDeTesteLigado(env: Record<string, string | undefined>): boo
   return env.LOGIN_DE_TESTE === "1" && !env.VERCEL;
 }
 
+/**
+ * Lê uma variável de ambiente sem espaços nem quebras de linha nas pontas
+ * (é fácil colar um "Enter" junto no painel da Vercel). Vazia vira undefined.
+ */
+export function lerEnv(env: Record<string, string | undefined>, nome: string): string | undefined {
+  const valor = env[nome]?.trim();
+  return valor ? valor : undefined;
+}
+
 /** O endereço oficial do site: o Google só devolve a pessoa para endereços cadastrados. */
 export const PRODUCAO = "https://catalogo-streaming-one.vercel.app";
 
@@ -52,7 +61,7 @@ export function origensConfiaveis(env: Record<string, string | undefined>): stri
     PRODUCAO,
     env.VERCEL_URL && `https://${env.VERCEL_URL}`,
     env.VERCEL_BRANCH_URL && `https://${env.VERCEL_BRANCH_URL}`,
-    env.BETTER_AUTH_URL,
+    lerEnv(env, "BETTER_AUTH_URL"),
   ];
   return [...new Set(origens.filter((o): o is string => !!o))];
 }
