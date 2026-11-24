@@ -20,6 +20,11 @@ export function CampoBusca({ valorInicial = "" }: { valorInicial?: string }) {
   const campo = useRef<HTMLInputElement>(null);
   const mostrar = aberto && logado && buscas.length > 0;
 
+  // Se a pessoa clicou na caixa antes de a página terminar de carregar, abre a lista assim que der
+  useEffect(() => {
+    if (document.activeElement === campo.current) setAberto(true);
+  }, []);
+
   // Fecha com um clique fora da caixa
   useEffect(() => {
     if (!mostrar) return;
