@@ -21,6 +21,7 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 ## Agentes
 
 - **Zelador do Catálogo** ([.claude/agents/zelador.md](.claude/agents/zelador.md)): faz uma ronda no site publicado pelo Chrome e só relata (✅/⚠️/❌). Só tem ferramentas do Chrome; não altera nada. Chamar com "chama o Zelador". Design: [docs/superpowers/specs/2026-11-25-zelador-design.md](docs/superpowers/specs/2026-11-25-zelador-design.md)
+- **Painel "Meus Agentes"** (https://claude.ai/artifact/ErjFybPv374Cx4LZQy66wh, privado, só leitura): cada agente bate o ponto ao começar e ao terminar na coleção `execucoes` (ferramenta ArtifactData); fichas em `agentes`. Agente novo = nova ficha + instrução de ponto. Design e plano em `C:\Users\alber\Meus Agentes\docs\`.
 - Agente novo ou manual alterado só vale depois de recarregar o VS Code (Ctrl+Shift+P → Reload Window).
 - Subagentes rodam em segundo plano: os passos não aparecem ao vivo no chat; o que se vê ao vivo é o Chrome. Se o dono estiver logado no site, a ronda pode deixar marcas no histórico dele e não confere o botão de login.
 
