@@ -18,6 +18,12 @@ Site que mostra os filmes disponíveis agora nos streamings do Brasil, com dados
 - **Novo visual (no ar em 2026-11-24):** "parede de pôsteres viva" no topo da home, cor por streaming (body:has([data-tema])), troca "cascata + letreiro", fontes Big Shoulders + Instrument Sans. Design: [docs/superpowers/specs/2026-11-24-visual-parede-design.md](docs/superpowers/specs/2026-11-24-visual-parede-design.md). Lição: efeitos 3D (perspective/backface-visibility) e mix-blend-mode ligados o tempo todo nas 60 capas travavam o celular por segundos; só ligar durante a animação.
 - Fluxo desde a Fase 2: trabalhar num ramo, abrir Pull Request (prévia da Vercel + robô "Qualidade") e só então juntar na `main`.
 
+## Agentes
+
+- **Zelador do Catálogo** ([.claude/agents/zelador.md](.claude/agents/zelador.md)): faz uma ronda no site publicado pelo Chrome e só relata (✅/⚠️/❌). Só tem ferramentas do Chrome; não altera nada. Chamar com "chama o Zelador". Design: [docs/superpowers/specs/2026-11-25-zelador-design.md](docs/superpowers/specs/2026-11-25-zelador-design.md)
+- Agente novo ou manual alterado só vale depois de recarregar o VS Code (Ctrl+Shift+P → Reload Window).
+- Subagentes rodam em segundo plano: os passos não aparecem ao vivo no chat; o que se vê ao vivo é o Chrome. Se o dono estiver logado no site, a ronda pode deixar marcas no histórico dele e não confere o botão de login.
+
 ## Como trabalhar com o dono
 
 - Ele é iniciante e fala português. Explique cada passo em português simples, sem jargão (ou explique o jargão).
