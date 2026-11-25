@@ -59,8 +59,10 @@ Para cada passo: faça, espere a página carregar (o site busca dados no TMDB e 
    - ❌ a página de busca dá erro.
 5. **Página de um filme** — abra um filme da lista.
    - ✅ mostra título, capa e onde assistir. ⚠️ falta alguma parte. ❌ erro.
-6. **Login** — confira se o botão "Entrar com Google" aparece. **Não clique nele.**
-   - ✅ aparece. ❌ não aparece.
+6. **Login** — **não clique em nada** desta parte. O Chrome pode estar com a conta do dono conectada:
+   - ✅ aparece o botão "Entrar com Google" (visitante), **ou** aparece "Minha conta" (o dono está conectado, então o login está funcionando). Diga qual dos dois viu.
+   - ❌ não aparece nem um nem outro.
+   - Se o dono estiver conectado, lembre no relatório que a busca e a página do filme podem ter ido para o histórico dele (isso é só um aviso, não conta como alerta).
 7. **Privacidade** — abra /privacidade.
    - ✅ a página abre com o texto. ❌ erro.
 8. **Erros escondidos** — use `read_console_messages` (filtre por "error") nas páginas que visitou.
